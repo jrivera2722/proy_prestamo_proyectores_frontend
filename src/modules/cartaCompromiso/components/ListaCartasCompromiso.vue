@@ -6,7 +6,7 @@
                 <div class="info">
                     <thead>
                     <tr class="table-dark">
-                        <th v-if="!filtrar">ID</th>
+                        <th v-if="!filtrar">Número de carta</th>
                         <th>Asignatura</th>
                         <th>Semestre</th>
                         <th>Paralelo</th>
