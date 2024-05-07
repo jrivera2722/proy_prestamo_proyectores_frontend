@@ -10,7 +10,6 @@
         </caption>
         <thead>
           <tr class="table-dark">
-            <th scope="col">ID</th>
             <th scope="col">Cédula</th>
             <th scope="col">Nombre</th>
             <th scope="col">Administrador</th>
@@ -19,7 +18,6 @@
         </thead>
         <tbody>
           <tr v-for="prestador in prestadores" :key="prestador.id">
-            <td>{{ prestador.id }}</td>
             <td>{{ prestador.cedula }}</td>
             <td>{{ prestador.nombre }}</td>
             <td v-if="prestador.administrador">Sí</td>

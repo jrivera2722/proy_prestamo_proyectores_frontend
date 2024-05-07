@@ -9,13 +9,13 @@
           <thead>
             <tr class="table-dark">
               <th v-if="false" scope="col">ID</th>
-              <th scope="col" style="width: 15%;">Código</th>
-              <th scope="col" style="width: 15%;">Nombre</th>
-              <th scope="col" style="width: 15%;">Número de Serie</th>
-              <th scope="col" style="width: 15%;">Estado</th>
-              <th scope="col" style="width: 15%;">Disponible</th>
-              <th scope="col" style="width: 15%;">Tipo</th>
-              <th scope="col" style="width: 15%;">Acción</th>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Número de Serie</th>
+              <th>Estado</th>
+              <th>Disponible</th>
+              <th>Tipo</th>
+              <th>Acción</th>
             </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -28,8 +28,11 @@
               <td v-if="bien.disponible">Sí</td>
               <td v-else>No</td>
               <td>{{ this.cambiarTipoATexto(bien.tipo) }}</td>
-              <td style="padding-block: 5px;">
-                <button class="btn btn-dark" @click="redirigirActualizarBien(bien.id)" >
+              <td style="padding-block: 5px">
+                <button
+                  class="btn btn-dark"
+                  @click="redirigirActualizarBien(bien.id)"
+                >
                   Editar
                 </button>
               </td>
@@ -142,6 +145,13 @@ td, th {
   overflow-y: auto;
 }
 
+.info th,
+.info td {
+  border: 1px solid black;
+  padding: 26px;
+  text-align: center;
+}
+
 thead {
   position: sticky;
   top: 0;
@@ -151,11 +161,5 @@ caption {
   font-weight: bold;
   font-size: 30px;
   text-align: center;
-}
-
-td,
-th {
-  text-align: center;
-  vertical-align: middle;
 }
 </style>

@@ -9,7 +9,7 @@
                     <label for="asiInput">Ingresa tu número de cédula: </label>
                 </div>
                 <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
-                    @obtenerIdCarta="recibirIdCarta" style="margin-left: -20%;" />
+                    @obtenerIdCarta="recibirIdCarta" style="margin-left: -40%;" />
                 <div v-else>
                     <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
                 </div>

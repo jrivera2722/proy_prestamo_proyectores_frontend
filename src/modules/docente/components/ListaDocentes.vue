@@ -5,7 +5,6 @@
                 <caption>Lista de Docentes</caption>
                 <thead>
                     <tr class="table-dark">
-                        <th scope="col">ID</th>
                         <th scope="col">Cédula</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Acción</th>
@@ -13,7 +12,6 @@
                 </thead>
                 <tbody>
                     <tr v-for="docente in docentes" :key="docente.id">
-                        <td>{{ docente.id }}</td>
                         <td>{{ docente.cedula }}</td>
                         <td>{{ docente.nombre }}</td>
                         <td>

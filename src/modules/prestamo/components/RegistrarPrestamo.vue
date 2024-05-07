@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="contenedor">
         <div>
             <div class="formulario">
                 <h1>Realizar un préstamo</h1>
@@ -25,7 +25,7 @@
                         </label>-->
                     </div>
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="filtroCarta"
-                        @obtenerIdCarta="recibirIdCarta" style="margin-left: -20%" />
+                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada"/>
                     <div v-else>
                         <h3 v-if="listaAyudantes.length == 10">
                             No existe ayudantes que conicidan con la busqueda.
@@ -507,7 +507,10 @@ export default {
 
 
 <style scoped>
-.container {
+.lista-centrada{
+    margin-left: -30%;
+}
+.contenedor {
     align-items: center;
     justify-content: center;
     margin-top: 2%;

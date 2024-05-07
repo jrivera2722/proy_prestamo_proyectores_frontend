@@ -5,7 +5,6 @@
                 <caption>Lista de Ayudantes</caption>
                 <thead>
                     <tr class="table-dark">
-                        <th scope="col">ID</th>
                         <th scope="col">Cédula</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Teléfono</th>
@@ -14,7 +13,6 @@
                 </thead>
                 <tbody>
                     <tr v-for="ayudante in ayudantes" :key="ayudante.id">
-                        <td>{{ ayudante.id }}</td>
                         <td>{{ ayudante.cedula }}</td>
                         <td>{{ ayudante.nombre }}</td>
                         <td>{{ ayudante.telefono }}</td>
