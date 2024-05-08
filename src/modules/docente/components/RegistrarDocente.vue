@@ -102,6 +102,8 @@ select {
 
 button {
     margin-top: 2%;
+    background: white;
+    color: black;
 }
 
 label {

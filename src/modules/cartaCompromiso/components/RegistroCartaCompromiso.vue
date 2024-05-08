@@ -44,7 +44,7 @@
                 </div>
                 <ul>
                     <li v-for="(item, index) in dias" :key="index">
-                        <h4>Horario {{ index + 1 }}</h4>
+                        <h4 style="color: white">Horario {{ index + 1 }}</h4>
                         <div class="form-floating">
                             <select name="diaInput" v-model="item.dia" class="form-control" placeholder="Lunes">
                                 <option v-for="opcion in opcionesDia" :key="opcion" :value="opcion">{{ opcion }}
@@ -390,7 +390,6 @@ export default {
 }
 
 h1 {
-    color: #363636;
     margin-bottom: 3%;
 }
 
@@ -401,6 +400,7 @@ select {
 
 button {
     margin-top: 2%;
+    background: white;
 }
 
 label {

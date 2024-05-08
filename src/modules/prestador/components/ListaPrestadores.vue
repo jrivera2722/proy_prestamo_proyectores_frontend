@@ -26,7 +26,8 @@
               <button
                 class="btn btn-dark"
                 @click="redirigirActualizarPrestador(prestador.cedula)"
-                :disabled="comprobarUsuario(prestador.cedula)">
+                :disabled="comprobarUsuario(prestador.cedula)"
+              >
                 Actualizar
               </button>
             </td>
@@ -57,24 +58,24 @@ export default {
   },
   methods: {
     async buscarPrestadores() {
-        const user = sessionStorage.getItem("user");
-        const addmin = await buscarPorCedulaPrestadorFachada(user);
-        this.usuario = addmin;
-        this.admin = addmin.administrador;
+      const user = sessionStorage.getItem("user");
+      const addmin = await buscarPorCedulaPrestadorFachada(user);
+      this.usuario = addmin;
+      this.admin = addmin.administrador;
 
-        const data = await buscarTodosPrestadoresFachada();
-        this.prestadores = data;
+      const data = await buscarTodosPrestadoresFachada();
+      this.prestadores = data;
     },
     async redirigirActualizarPrestador(cedula) {
       const ruta = `/prestadores/actualizar/${cedula}`;
       await router.push({ path: ruta });
     },
     comprobarUsuario(cedula) {
-        if (this.admin==true || this.usuario.cedula == cedula) {
-            return false;
-        } else {
-            return true;
-        }
+      if (this.admin == true || this.usuario.cedula == cedula) {
+        return false;
+      } else {
+        return true;
+      }
     },
   },
   mounted() {
@@ -88,11 +89,11 @@ export default {
   background-color: lightblue;
 }
 .contenedor {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: calc(100vh - 70px);
-    background-color: #6999db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 70px);
+  background-color: #6999db;
 }
 
 .tabla {

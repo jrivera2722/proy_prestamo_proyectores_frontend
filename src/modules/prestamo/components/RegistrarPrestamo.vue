@@ -8,11 +8,11 @@
                     style="margin-top: -15px">
                     <input class="btn-check" id="btnPrestDoc" type="checkbox" v-model="prestamoDocente"
                         @click="toggleCheckboxes(1)" />
-                    <label class="btn btn-outline-secondary" for="btnPrestDoc">Docente</label>
+                    <label class="btn btn-outline-secondary" for="btnPrestDoc" style="background: white">Docente</label>
 
                     <input class="btn-check" id="btnPrestAyu" type="checkbox" v-model="prestamoAyudante"
                         @click="toggleCheckboxes(2)" />
-                    <label class="btn btn-outline-secondary" for="btnPrestAyu">Ayudante</label>
+                    <label class="btn btn-outline-secondary" for="btnPrestAyu" style="background: white">Ayudante</label>
                 </div>
 
                 <div v-if="prestamoAyudante">
@@ -194,15 +194,16 @@ export default {
             filtroCarta: "",
             listaAyudantes: [],
             listaDocentes: [],
-            docenteSeleccionado:""
+            docenteSeleccionado:"",
+            elegirOpc:false
         };
     },
     methods: {
-        /*seleccionarAyudante(){
-            this.cedulaRegistrada = false;
-            //this.cedulaSolicitud=this.cedulaSolicitud;
+        seleccionarAyudante(){
+            this.elegirOpc = true;
+            this.cedulaSolicitud=this.cedulaSolicitud;
             //this.verificarNombre(this.cedulaSolicitud);
-        },*/
+        },
         async seleccionarDocente(){
             const data = await buscarPorNombreDocenteFachada(this.cedulaSolicitudDocente);
             this.docenteSeleccionado = data[0].cedula;
@@ -250,7 +251,7 @@ export default {
                 const lista = [];
                 const data = await buscarPorNombreAyudanteFachada(this.cedulaSolicitud);
                 data.forEach((item) => {
-                    lista.push(item.nombre);
+                    lista.push(item.nombre+"/"+item.cedula);
                 });
                 this.listaAyudantes = lista;
             } catch {
@@ -402,9 +403,9 @@ export default {
             const val = parseInt(this.cedulaSolicitud);
             if (this.cedulaSolicitud.length == 10 && !isNaN(val)) {
                 this.verificarCedula();
-            } else if (this.cedulaSolicitud.length > 4 && isNaN(val)) {
+            } /*else if (this.cedulaSolicitud.length > 4 && isNaN(val)) {
                 this.verificarNombre(this.cedulaSolicitud);
-            } else if (this.cedulaSolicitud.length == 4 && isNaN(val)) {
+            }*/ else if (this.cedulaSolicitud.length == 4 && isNaN(val) && !this.elegirOpc) {
                 this.buscarAyudantes();
             }
         },
@@ -536,6 +537,7 @@ select {
 
 button {
     margin-top: 2%;
+    background: white;
 }
 
 label {

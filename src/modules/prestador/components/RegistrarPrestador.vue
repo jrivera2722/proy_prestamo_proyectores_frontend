@@ -132,6 +132,12 @@ select {
 
 button {
     margin-top: 2%;
+    background: white;
+    color: #462255;
+}
+/*Revisar cambios de boton*/
+.btn-group{
+  background: white;
 }
 
 label {

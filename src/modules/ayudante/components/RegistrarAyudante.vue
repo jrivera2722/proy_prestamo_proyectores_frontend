@@ -87,6 +87,7 @@ export default {
 </script>
 
 <style scoped>
+
 .container {
     align-items: center;
     justify-content: center;
@@ -110,6 +111,8 @@ select {
 
 button {
     margin-top: 2%;
+    background: white;
+    color: black;
 }
 
 label {
@@ -126,9 +129,9 @@ li {
     margin-top: 3%;
 }
 
-h4 {
+/*h4 {
     color: #3E78B2;
-}
+}*/
 
 @media screen and (max-width: 991px) {
     .formulario {

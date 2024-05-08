@@ -1,5 +1,5 @@
 <template>
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3E78B2;">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3E78B2;">
         <div class="container-fluid">
             <router-link class="nav-link active" aria-current="page" to="/"><img src="../assets/logo_uce.png"
                     alt="no se puede mostrar la imagen" /></router-link>
@@ -20,7 +20,7 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav>    
 </template>
 
 <script>
@@ -30,6 +30,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 nav {
     margin-top: -60px;
     font-weight: bold;

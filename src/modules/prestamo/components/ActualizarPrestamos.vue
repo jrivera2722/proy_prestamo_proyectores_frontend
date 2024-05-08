@@ -169,6 +169,9 @@ export default {
                 prestamo = await buscarPorIdPrestamoFachada(this.id);
                 if(prestamo.idCartaCompromiso!=null){
                     carta = await buscarPorIdCartaCompromisoFachada(prestamo.idCartaCompromiso);
+                }else if(prestamo.cedulaDocente!=null){
+                    //Poner el buscar por prestamo docente
+                    carta = null;
                 }
                 
             } catch {

@@ -147,16 +147,18 @@ td, th {
   overflow-y: auto;
 }
 
-/*Ver padding */
+/*View this observality for changed in others pags web.*/
 .info th,
 .info td {
   padding: 26px;
   text-align: center;
+  vertical-align: middle;
 }
 
 thead {
   position: sticky;
   top: 0;
+  z-index: 1;
 }
 
 caption {
