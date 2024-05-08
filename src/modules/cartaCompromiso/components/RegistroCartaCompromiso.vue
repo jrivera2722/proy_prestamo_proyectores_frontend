@@ -89,6 +89,8 @@
 </template>
 
 <script>
+import { jsPDF } from "jspdf";
+import 'jspdf-autotable'
 import { guardarCartaCompromisoFachada } from '../helpers/CartaCompromisoCliente';
 import { buscarPorCedulaAyudanteFachada } from '@/modules/ayudante/helpers/AyudanteCliente';
 import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
@@ -218,6 +220,7 @@ export default {
             }
         },
         generarPDF() {
+            
             const doc = new jsPDF();
 
             const x = 28;

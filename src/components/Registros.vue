@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div>
-            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group" style="margin-top: 2.5%">
                 <input class="btn-check" id="inpAyudante" type="checkbox" v-model="registroAyudante"
                     @click="toggleCheckboxes(1)">
                 <label class="btn btn-outline-primary" for="inpAyudante">Ayudante</label>
@@ -117,7 +117,9 @@ export default {
 
 <style scoped>
 .container {
-    margin-top: 2.5%;
+    /*margin-top: 2.5%;*/
+    height: calc(100vh - 150px);
+    background-color: #6999db;
 }
 
 label {

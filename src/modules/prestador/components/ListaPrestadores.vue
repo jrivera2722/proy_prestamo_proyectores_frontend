@@ -88,9 +88,11 @@ export default {
   background-color: lightblue;
 }
 .contenedor {
-  align-items: center;
-  justify-content: center;
-  margin-top: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    background-color: #6999db;
 }
 
 .tabla {

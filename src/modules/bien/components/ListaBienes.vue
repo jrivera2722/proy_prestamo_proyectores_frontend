@@ -130,9 +130,11 @@ td, th {
     vertical-align: middle;
 }*/
 .contenedor {
-  align-items: center;
-  justify-content: center;
-  margin-top: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 70px);
+    background-color: #6999db;
 }
 
 .tabla {
@@ -145,9 +147,9 @@ td, th {
   overflow-y: auto;
 }
 
+/*Ver padding */
 .info th,
 .info td {
-  border: 1px solid black;
   padding: 26px;
   text-align: center;
 }

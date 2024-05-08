@@ -120,11 +120,12 @@ export default {
 
 <style scoped>
 .contenedor {
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 2%;
+    height: calc(100vh - 70px);
+    background-color: #6999db;
 }
-
 .tabla {
     margin-left: 2%;
     width: 96%;

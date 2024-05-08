@@ -1,5 +1,5 @@
 <template>
-  <div v-if="login">
+  <div v-if="login" class="contenedor">
     <NavBar />
     <router-view></router-view>
 

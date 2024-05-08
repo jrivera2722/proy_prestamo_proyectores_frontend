@@ -16,14 +16,14 @@
                 </div>
 
                 <div v-if="prestamoAyudante">
-                    <div class="form-floating">
-                        <v-select id="asiInput" v-model="cedulaSolicitud" @search="valorDado" class="form-control" :options="listaAyudantes"
+                    <v-select id="asiInput" v-model="cedulaSolicitud" @search="valorDado" class="form-control" :options="listaAyudantes"
                             @input="printSelectedValue" placeholder="Nombre o número de cédula del ayudante" ></v-select>
-                        <!--<input id="asiInput" type="text" v-model="cedulaSolicitud" class="form-control" maxlength="10"
+                    <!--<div class="form-floating">
+                        <input id="asiInput" type="text" v-model="cedulaSolicitud" class="form-control" maxlength="10"
                             @input="restrictInput" placeholder="XXXXXXXXXX" />
                         <label for="asiInput">Ingresa el nombre o el número de cédula del ayudante:
-                        </label>-->
-                    </div>
+                        </label>
+                    </div>-->
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="filtroCarta"
                         @obtenerIdCarta="recibirIdCarta" class="lista-centrada"/>
                     <div v-else>
@@ -33,25 +33,25 @@
                     </div>
                 </div>
                 <div v-if="prestamoDocente">
-                    <div class="form-floating">
-                        <v-select id="asiInput" v-model="cedulaSolicitudDocente" @search="valorDadoDocente" class="form-control" :options="listaDocentes"
-                            @input="printSelectedValue" placeholder="Nombre o número de cédula del docente"></v-select>
-                        <!--<input id="asiInput" type="text" v-model="cedulaSolicitudDocente" class="form-control"
+                    <v-select id="asiInput" v-model="cedulaSolicitudDocente" @search="valorDadoDocente" class="form-control" :options="listaDocentes"
+                            @input="printSelectedValue" placeholder="Nombre o número de cédula del docente" @change="seleccionarDocente"></v-select>
+                    <!--<div class="form-floating">
+                        <input id="asiInput" type="text" v-model="cedulaSolicitudDocente" class="form-control"
                             maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX" />
                         <label for="asiInput">Ingresa el nombre o el número de cédula del docente:
-                        </label>-->
-                    </div>
+                        </label>
+                    </div>-->
                 </div>
                 <div v-if="cedulaRegistrada || prestamoDocente" class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
-                    style="margin-top: 15px; margin-bottom: 15px; margin-left: -4.5%">
+                    style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
                     <input class="btn-check" id="btnProyector" type="checkbox" v-model="buscarProyectores" />
                     <label class="btn btn-outline-secondary" for="btnProyector">Proyector</label>
 
                     <input class="btn-check" id="btnCablePoder" type="checkbox" v-model="buscarCablesPoder" />
-                    <label class="btn btn-outline-secondary" for="btnCablePoder">Cable de Poder</label>
+                    <label class="btn btn-outline-secondary" for="btnCablePoder">C.Poder</label>
 
                     <input class="btn-check" id="btnCHDMI" type="checkbox" v-model="buscarcablesHDMI" />
-                    <label class="btn btn-outline-secondary" for="btnCHDMI">Cable HDMI</label>
+                    <label class="btn btn-outline-secondary" for="btnCHDMI">HDMI</label>
 
                     <input class="btn-check" id="btnAD" type="checkbox" v-model="buscarAdaptador" />
                     <label class="btn btn-outline-secondary" for="btnAD">Adaptador</label>
@@ -60,7 +60,7 @@
                     <label class="btn btn-outline-secondary" for="btnPA">Parlantes</label>
 
                     <input class="btn-check" id="btnCVGAr" type="checkbox" v-model="buscarCablesVGA" />
-                    <label class="btn btn-outline-secondary" for="btnCVGAr">Cable VGA</label>
+                    <label class="btn btn-outline-secondary" for="btnCVGAr">VGA</label>
 
                     <input class="btn-check" id="btnExtension" type="checkbox" v-model="buscarExtensiones" />
                     <label class="btn btn-outline-secondary" for="btnExtension">Extensión</label>
@@ -193,7 +193,8 @@ export default {
             seguro: true,
             filtroCarta: "",
             listaAyudantes: [],
-            listaDocentes: []
+            listaDocentes: [],
+            docenteSeleccionado:""
         };
     },
     methods: {
@@ -201,10 +202,12 @@ export default {
             this.cedulaRegistrada = false;
             //this.cedulaSolicitud=this.cedulaSolicitud;
             //this.verificarNombre(this.cedulaSolicitud);
-        },
-        seleccionarDocente(){
-            this.verificarNombreDocente(this.cedulaSolicitudDocente);
         },*/
+        async seleccionarDocente(){
+            const data = await buscarPorNombreDocenteFachada(this.cedulaSolicitudDocente);
+            this.docenteSeleccionado = data[0].cedula;
+            console.log(this.docenteSeleccionado);
+        },
         valorDado(searchText) {
             this.cedulaSolicitud = searchText;
         },
@@ -308,7 +311,7 @@ export default {
             } else if (this.prestamoDocente) {
                 data = {
                     devuelto: false,
-                    cedulaDocente: this.cedulaSolicitudDocente,
+                    cedulaDocente: this.docenteSeleccionado,
                     cedulaPrestador: log,
                     codigoBienes: this.codigoBienes,
                 };

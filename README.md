@@ -22,6 +22,8 @@ npm run test:unit
 
 ## instalar vue-select
 npm install vue-select@beta
+## instalar jspdf
+npm install jspdf-autotable
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

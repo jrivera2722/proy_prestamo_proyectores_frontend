@@ -13,15 +13,16 @@
                 <div v-else>
                     <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
                 </div>
-                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
+                    style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
                     <input class="btn-check" id="btnProyector" type="checkbox" v-model="buscarProyectores">
                     <label class="btn btn-outline-secondary" for="btnProyector">Proyector</label>
 
                     <input class="btn-check" id="btnCablePoder" type="checkbox" v-model="buscarCablesPoder">
-                    <label class="btn btn-outline-secondary" for="btnCablePoder">Cable de poder</label>
+                    <label class="btn btn-outline-secondary" for="btnCablePoder">C.Poder</label>
 
                     <input class="btn-check" id="btnCHDMI" type="checkbox" v-model="buscarcablesHDMI">
-                    <label class="btn btn-outline-secondary" for="btnCHDMI">Cable HDMI</label>
+                    <label class="btn btn-outline-secondary" for="btnCHDMI">HDMI</label>
 
                     <input class="btn-check" id="btnAD" type="checkbox" v-model="buscarAdaptador">
                     <label class="btn btn-outline-secondary" for="btnAD">Adaptador</label>
@@ -30,7 +31,7 @@
                     <label class="btn btn-outline-secondary" for="btnPA">Parlantes</label>
 
                     <input class="btn-check" id="btnCVGAr" type="checkbox" v-model="buscarCablesVGA">
-                    <label class="btn btn-outline-secondary" for="btnCVGAr">Cable VGA</label>
+                    <label class="btn btn-outline-secondary" for="btnCVGAr">VGA</label>
 
                     <input class="btn-check" id="btnExtension" type="checkbox" v-model="buscarExtensiones">
                     <label class="btn btn-outline-secondary" for="btnExtension">Extensión</label>
@@ -166,7 +167,10 @@ export default {
             let carta;
             try {
                 prestamo = await buscarPorIdPrestamoFachada(this.id);
-                carta = await buscarPorIdCartaCompromisoFachada(prestamo.idCartaCompromiso);
+                if(prestamo.idCartaCompromiso!=null){
+                    carta = await buscarPorIdCartaCompromisoFachada(prestamo.idCartaCompromiso);
+                }
+                
             } catch {
                 this.redirigirAError();
                 return;

@@ -6,7 +6,7 @@
                 <div class="info">
                     <thead>
                     <tr class="table-dark">
-                        <th v-if="!filtrar">Número de carta de compromiso</th>
+                        <th v-if="!filtrar">N.Carta</th>
                         <th>Asignatura</th>
                         <th>Semestre</th>
                         <th>Paralelo</th>
@@ -154,13 +154,15 @@ export default {
 }
 
 .contenedor {
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 2%;
+    height: calc(100vh - 70px);
+    background-color: #6999db;
 }
 
 .tabla {
-    margin-left: 2%;
+    
     width: 96%;
 }
 
@@ -171,7 +173,7 @@ caption {
 }
 
 .info {
-  max-height: 70vh;
+  max-height: 60vh;
   overflow-y: auto;
 
   align-items: center;
