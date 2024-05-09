@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <div>
       <div class="formulario">
         <h1>Registro de Ayudantes</h1>
         <div class="form-floating">
@@ -21,7 +20,6 @@
           style="margin-bottom: 1%">Guardar</button>
         </div>
       </div>
-    </div>
   </div>
 </template>
 

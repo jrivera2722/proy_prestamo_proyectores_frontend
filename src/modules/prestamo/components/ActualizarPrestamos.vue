@@ -3,26 +3,46 @@
         <div>
             <div class="formulario">
                 <h1>Actualizar un préstamo</h1>
-                <div class="form-floating">
-                    <input id="asiInput" type="text" v-model="cedulaSolicitud" class="form-control"
-                        placeholder="XXXXXXXXXX" maxlength="10">
-                    <label for="asiInput">Ingresa tu número de cédula: </label>
-                </div>
-                <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
-                    @obtenerIdCarta="recibirIdCarta" style="margin-left: -45%; height: 100%" />
-                <div v-else>
-                    <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
-                </div>
+
                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
-                    style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
+                    style="margin-top: -15px;">
+                    <input class="btn-check" id="btnPrestDoc" type="checkbox" v-model="prestamoDocente" disabled>
+                    <label class="btn btn-outline-secondary" for="btnPrestDoc">Docente</label>
+
+                    <input class="btn-check" id="btnPrestAyu" type="checkbox" v-model="prestamoAyudante" disabled>
+                    <label class="btn btn-outline-secondary" for="btnPrestAyu">Ayudante</label>
+                </div>
+
+                <div v-if="prestamoAyudante">
+                    <div class="form-floating">
+                        <input id="asiInput" type="text" v-model="cedulaSolicitud" class="form-control" maxlength="10"
+                            @input="restrictInput" placeholder="XXXXXXXXXX" />
+                        <label for="asiInput">Número de cédula del ayudante: </label>
+                    </div>
+                    <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
+                        @obtenerIdCarta="recibirIdCarta" style="margin-left: -45%; height: 100%" />
+                    <div v-else>
+                        <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
+                    </div>
+                </div>
+                <div v-if="prestamoDocente">
+                    <div class="form-floating">
+                        <input id="asiInput" type="text" v-model="cedulaSolicitudDocente" class="form-control"
+                            maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX" />
+                        <label for="asiInput">Número de cédula del docente: </label>
+                    </div>
+                </div>
+
+                <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
+                style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
                     <input class="btn-check" id="btnProyector" type="checkbox" v-model="buscarProyectores">
                     <label class="btn btn-outline-secondary" for="btnProyector">Proyector</label>
 
                     <input class="btn-check" id="btnCablePoder" type="checkbox" v-model="buscarCablesPoder">
-                    <label class="btn btn-outline-secondary" for="btnCablePoder">C.Poder</label>
+                    <label class="btn btn-outline-secondary" for="btnCablePoder">Cable de poder</label>
 
                     <input class="btn-check" id="btnCHDMI" type="checkbox" v-model="buscarcablesHDMI">
-                    <label class="btn btn-outline-secondary" for="btnCHDMI">HDMI</label>
+                    <label class="btn btn-outline-secondary" for="btnCHDMI">Cable HDMI</label>
 
                     <input class="btn-check" id="btnAD" type="checkbox" v-model="buscarAdaptador">
                     <label class="btn btn-outline-secondary" for="btnAD">Adaptador</label>
@@ -31,7 +51,7 @@
                     <label class="btn btn-outline-secondary" for="btnPA">Parlantes</label>
 
                     <input class="btn-check" id="btnCVGAr" type="checkbox" v-model="buscarCablesVGA">
-                    <label class="btn btn-outline-secondary" for="btnCVGAr">VGA</label>
+                    <label class="btn btn-outline-secondary" for="btnCVGAr">Cable VGA</label>
 
                     <input class="btn-check" id="btnExtension" type="checkbox" v-model="buscarExtensiones">
                     <label class="btn btn-outline-secondary" for="btnExtension">Extensión</label>
@@ -103,7 +123,8 @@
                     <label class="btn btn-outline-secondary" for="btnDovolver">Devuelto</label>
                 </div>
                 <div v-if="seguro">
-                    <button class="btn btn-outline-secondary" @click="actualizarPrestamo">Actualizar</button>
+                    <button class="btn btn-outline-secondary" @click="actualizarPrestamo"
+                        style="margin-bottom: 1%">Actualizar</button>
                 </div>
             </div>
         </div>
@@ -117,7 +138,8 @@ import { buscarPorPrestamoTipoBienFachada, buscarPorPrestamoTipoDisponiblesBienF
 import { buscarPorCedulaAyudanteFachada } from '@/modules/ayudante/helpers/AyudanteCliente';
 import { actualizarPrestamoFachada, buscarPorIdPrestamoFachada } from '../helpers/PrestamoCliente';
 import { buscarPorIdCartaCompromisoFachada } from '@/modules/cartaCompromiso/helpers/CartaCompromisoCliente';
-import { buscarPorCedulaDocenteFachada, buscarPorNombreDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
+import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
+
 export default {
     components: {
         ListaCartasCompromiso,
@@ -128,7 +150,10 @@ export default {
             prestamo: null,
             devuelto: false,
             cedulaSolicitud: "",
+            cedulaSolicitudDocente: "",
             cedulaRegistrada: false,
+            prestamoDocente: false,
+            prestamoAyudante: false,
             idCartaCompromiso: 0,
             proyectores: [],
             cablesPoder: [],
@@ -168,27 +193,29 @@ export default {
             let docente;
             try {
                 prestamo = await buscarPorIdPrestamoFachada(this.id);
-                if(prestamo.idCartaCompromiso!=null){
+                if (prestamo.idCartaCompromiso) {
                     carta = await buscarPorIdCartaCompromisoFachada(prestamo.idCartaCompromiso);
-                }else if(prestamo.cedulaDocente!=null){
-                    //Poner el buscar por prestamo docente
+                    this.prestamoAyudante = true;
+                } else if (prestamo.cedulaDocente) {
                     docente = await buscarPorCedulaDocenteFachada(prestamo.cedulaDocente);
+                    this.prestamoDocente = true;
                 }
-                
             } catch {
                 this.redirigirAError();
                 return;
             }
-            if(carta!=null){
+
+            this.prestamo = prestamo;
+            console.log(this.prestamo.tipoBienes);
+            if (this.prestamoAyudante) {
                 this.cedulaSolicitud = carta.cedulaAyudante;
                 this.idCartaCompromiso = carta.id;
-            }else if(docente!=null){
-                this.cedulaSolicitud=docente.cedula;
+            } else if (this.prestamoDocente) {
+                this.cedulaSolicitudDocente = docente.cedula;
             }
-            this.prestamo = prestamo;
+
             this.obtenerVariablesIndependientes(prestamo.codigoBienes);
             this.devuelto = prestamo.devuelto;
-            
         },
         obtenerVariablesIndependientes(lista) {
             var bienes = [];
@@ -283,21 +310,32 @@ export default {
         },
         async actualizarPrestamo() {
             this.codigoBienes = this.almacenarBienes();
-            const data = {
-                devuelto: this.devuelto,
-                idCartaCompromiso: this.idCartaCompromiso,
-                cedulaPrestador: "1234512345",
-                codigoBienes: this.codigoBienes,
-                cedulaReceptor: "1234512345"
+            const log = sessionStorage.getItem("user");
+            let data;
+            if (this.prestamoAyudante) {
+                data = {
+                    devuelto: this.devuelto,
+                    idCartaCompromiso: this.idCartaCompromiso,
+                    codigoBienes: this.codigoBienes,
+                    cedulaReceptor: log,
+                    cedulaPrestador: this.prestamo.cedulaPrestador
+                }
+            } else if (this.prestamoDocente) {
+                data = {
+                    devuelto: this.devuelto,
+                    cedulaDocente: this.cedulaSolicitudDocente,
+                    cedulaReceptor: log,
+                    codigoBienes: this.codigoBienes,
+                    cedulaPrestador: this.prestamo.cedulaPrestador
+                }
             }
             console.log(data);
 
             if (this.verificarCampos()) {
-
                 const registro = await actualizarPrestamoFachada(data, this.id);
                 if (registro) {
-                    this.limpiarCampos();
                     alert("Se realizo el prestamo de forma exitosa.");
+                    await this.redirigirAListaPrestamos();
                 } else {
                     alert("Parece que hubo un problema al intentar el prestamo.")
                 }
@@ -308,7 +346,7 @@ export default {
         },
         verificarCampos() {
             try {
-                if (this.idCartaCompromiso != "" &&
+                if ((this.idCartaCompromiso != "" || this.cedulaSolicitudDocente != "") &&
                     this.codigoBienes.length != 0
                 ) {
                     return true;
@@ -322,8 +360,13 @@ export default {
             const ruta = `/error`;
             await router.push({ path: ruta });
         },
+        async redirigirAListaPrestamos() {
+            const ruta = `/prestamos`;
+            await router.push({ path: ruta });
+        },
         limpiarCampos() {
             this.cedulaSolicitud = "";
+            this.cedulaSolicitudDocente = "";
             this.cedulaRegistrada = false;
             this.idCartaCompromiso = 0;
             this.proyectores = [];
@@ -372,7 +415,7 @@ export default {
                 } catch { }
 
                 if (this.proyectores.length == 0) {
-                    alert("No hay proyectores disponibles.");
+                    alert("ERROR! No hay proyectores disponibles.");
                     this.buscarProyectores = false;
                 }
             }
@@ -390,7 +433,7 @@ export default {
                 } catch { }
 
                 if (this.cablesPoder.length == 0) {
-                    alert("No hay cables de poder disponibles.");
+                    alert("ERROR! No hay cables de poder disponibles.");
                     this.buscarCablesPoder = false;
                 }
             }
@@ -408,7 +451,7 @@ export default {
                 } catch { }
 
                 if (this.cablesHDMI.length == 0) {
-                    alert("No hay cables HDMI disponibles.");
+                    alert("ERROR! No hay cables HDMI disponibles.");
                     this.buscarcablesHDMI = false;
                 }
             }
@@ -426,7 +469,7 @@ export default {
                 } catch { }
 
                 if (this.adaptadores.length == 0) {
-                    alert("No hay adaptadores disponibles.");
+                    alert("ERROR! No hay adaptadores disponibles.");
                     this.buscarAdaptador = false;
                 }
             }
@@ -444,7 +487,7 @@ export default {
                 } catch { }
 
                 if (this.parlantes.length == 0) {
-                    alert("No hay parlantes disponibles.");
+                    alert("ERROR! No hay parlantes disponibles.");
                     this.buscarParlantes = false;
                 }
             }
@@ -462,7 +505,7 @@ export default {
                 } catch { }
 
                 if (this.cablesVGA.length == 0) {
-                    alert("No hay cables VGA disponibles.");
+                    alert("ERROR! No hay cables VGA disponibles.");
                     this.buscarCablesVGA = false;
                 }
             }
@@ -480,7 +523,7 @@ export default {
                 } catch { }
 
                 if (this.extensiones.length == 0) {
-                    alert("No hay extensiones disponibles.");
+                    alert("ERROR! No hay extensiones disponibles.");
                     this.buscarExtensiones = false;
                 }
             }
@@ -498,7 +541,7 @@ export default {
                 } catch { }
 
                 if (this.cortapicos.length == 0) {
-                    alert("No hay cortapicos disponibles.");
+                    alert("ERROR! No hay cortapicos disponibles.");
                     this.buscarCortapicos = false;
                 }
             }

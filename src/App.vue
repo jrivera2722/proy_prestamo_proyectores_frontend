@@ -97,6 +97,7 @@ export default {
 </script>
 
 <style>
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -112,12 +113,13 @@ export default {
   top: 4px;
   right: 10px;
   padding: 10px;
+
 }
 
 .contenedorLogin {
   width: 60%;
   margin-left: 20%;
-  margin-top: 95px;
+  margin-top: 124px;
 }
 
 .contenedorLogin div input {
@@ -137,6 +139,7 @@ export default {
 .contenedorLogin h1 {
   font-size: 25px;
   margin-bottom: 20px;
+  
 }
 
 .navLogin {
@@ -153,12 +156,14 @@ export default {
   left: 5px;
   height: 65px;
   padding: 5px;
+  
 }
 
 .navLogin h1 {
   margin-top: 10px;
   color: white;
   font-weight: bold;
+  
 }
 
 @media screen and (max-width: 991px) {
