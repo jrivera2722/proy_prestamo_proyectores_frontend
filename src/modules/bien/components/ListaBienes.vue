@@ -139,7 +139,7 @@ td, th {
 
 .tabla {
   margin-left: 2%;
-  width: 96%;
+  width: fit-content;
 }
 
 .info {

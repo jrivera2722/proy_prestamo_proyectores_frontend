@@ -162,8 +162,8 @@ export default {
 }
 
 .tabla {
-    
-    width: 96%;
+    margin: 1.5%;
+    width: fit-content;
 }
 
 caption {

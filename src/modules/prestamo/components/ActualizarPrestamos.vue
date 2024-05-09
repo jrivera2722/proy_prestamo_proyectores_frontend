@@ -20,7 +20,7 @@
                         <label for="asiInput">Número de cédula del ayudante: </label>
                     </div>
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
-                        @obtenerIdCarta="recibirIdCarta" style="margin-left: -45%; height: 100%" />
+                        @obtenerIdCarta="recibirIdCarta" style=" height: 100%" />
                     <div v-else>
                         <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
                     </div>
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
-                style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
+                style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%;">
                     <input class="btn-check" id="btnProyector" type="checkbox" v-model="buscarProyectores">
                     <label class="btn btn-outline-secondary" for="btnProyector">Proyector</label>
 

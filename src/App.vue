@@ -2,7 +2,6 @@
   <div v-if="login" class="contenedor">
     <NavBar />
     <router-view></router-view>
-
     <div class="logout">
       <button @click="log_out" class="btn btn-danger">Cerrar Sesión</button>
     </div>
@@ -107,41 +106,33 @@ export default {
   margin-top: 60px;
   background: #6999db;
 }
-
 .logout {
   position: absolute;
   top: 4px;
   right: 10px;
   padding: 10px;
-
 }
-
 .contenedorLogin {
   width: 60%;
   margin-left: 20%;
   margin-top: 124px;
 }
-
 .contenedorLogin div input {
   margin-bottom: 10px;
 }
-
 .contenedorLogin button {
   padding: 5px 10px;
   font-weight: bold;
 }
-
 .contenedorLogin div label {
   color: #3E78B2;
   font-weight: bold;
 }
-
 .contenedorLogin h1 {
   font-size: 25px;
   margin-bottom: 20px;
   
 }
-
 .navLogin {
   position: absolute;
   top: 0;
@@ -150,7 +141,6 @@ export default {
   margin-left: 0;
   background: #3E78B2;
 }
-
 .navLogin img {
   position: absolute;
   left: 5px;
@@ -158,14 +148,12 @@ export default {
   padding: 5px;
   
 }
-
 .navLogin h1 {
   margin-top: 10px;
   color: white;
   font-weight: bold;
   
 }
-
 @media screen and (max-width: 991px) {
   .logout {
     right: 80px;
