@@ -139,12 +139,15 @@ td, th {
 
 .tabla {
   margin-left: 2%;
-  width: 96%;
+  width: fit-content /*Cambio realizado*/
+  
 }
 
 .info {
   max-height: 70vh;
   overflow-y: auto;
+  
+
 }
 
 /*View this observality for changed in others pags web.*/
@@ -165,5 +168,6 @@ caption {
   font-weight: bold;
   font-size: 30px;
   text-align: center;
+  
 }
 </style>
