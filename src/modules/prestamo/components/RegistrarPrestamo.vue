@@ -14,18 +14,14 @@
                         @click="toggleCheckboxes(2)" />
                     <label class="btn btn-outline-secondary" for="btnPrestAyu" style="background: white">Ayudante</label>
                 </div>
-
+                <div v-if="opcSeleccionado.nombre!=null && opcSeleccionado.cedula!=null">
+                    <h5>Realizar un préstamo: {{ opcSeleccionado.nombre }} C.I: {{ opcSeleccionado.cedula }}</h5>
+                </div>
                 <div v-if="prestamoAyudante">
                     <v-select id="asiInput" v-model="cedulaSolicitud" @search="valorDado" class="form-control" :options="listaAyudantes"
-                            @input="printSelectedValue" placeholder="Nombre o número de cédula del ayudante" ></v-select>
-                    <!--<div class="form-floating">
-                        <input id="asiInput" type="text" v-model="cedulaSolicitud" class="form-control" maxlength="10"
-                            @input="restrictInput" placeholder="XXXXXXXXXX" />
-                        <label for="asiInput">Ingresa el nombre o el número de cédula del ayudante:
-                        </label>
-                    </div>-->
+                            @input="printSelectedValue" placeholder="Nombre o número de cédula del ayudante"></v-select>
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="filtroCarta"
-                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada"/>
+                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada" style="height: 100%;"/>
                     <div v-else>
                         <h3 v-if="listaAyudantes.length == 10">
                             No existe ayudantes que conicidan con la busqueda.
@@ -34,13 +30,7 @@
                 </div>
                 <div v-if="prestamoDocente">
                     <v-select id="asiInput" v-model="cedulaSolicitudDocente" @search="valorDadoDocente" class="form-control" :options="listaDocentes"
-                            @input="printSelectedValue" placeholder="Nombre o número de cédula del docente" @change="seleccionarDocente"></v-select>
-                    <!--<div class="form-floating">
-                        <input id="asiInput" type="text" v-model="cedulaSolicitudDocente" class="form-control"
-                            maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX" />
-                        <label for="asiInput">Ingresa el nombre o el número de cédula del docente:
-                        </label>
-                    </div>-->
+                            @input="printSelectedValue" placeholder="Nombre o número de cédula del docente"></v-select>
                 </div>
                 <div v-if="cedulaRegistrada || prestamoDocente" class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
                     style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
@@ -150,7 +140,7 @@ import {
     buscarPorCedulaAyudanteFachada,
     buscarPorNombreAyudanteFachada,
 } from "@/modules/ayudante/helpers/AyudanteCliente";
-import { buscarPorNombreDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
+import { buscarPorCedulaDocenteFachada, buscarPorNombreDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
 import { guardarPrestamoFachada } from "../helpers/PrestamoCliente";
 
 export default {
@@ -195,20 +185,13 @@ export default {
             listaAyudantes: [],
             listaDocentes: [],
             docenteSeleccionado:"",
-            elegirOpc:false
+            opcSeleccionado:{
+                nombre: null,
+                cedula: null
+            }
         };
     },
     methods: {
-        seleccionarAyudante(){
-            this.elegirOpc = true;
-            this.cedulaSolicitud=this.cedulaSolicitud;
-            //this.verificarNombre(this.cedulaSolicitud);
-        },
-        async seleccionarDocente(){
-            const data = await buscarPorNombreDocenteFachada(this.cedulaSolicitudDocente);
-            this.docenteSeleccionado = data[0].cedula;
-            console.log(this.docenteSeleccionado);
-        },
         valorDado(searchText) {
             this.cedulaSolicitud = searchText;
         },
@@ -223,30 +206,34 @@ export default {
             const data = await buscarPorDisponibilidadTipoBienFachada(tipo, true);
             return data;
         },
-        async verificarCedula() {
+        async verificarAyudante(nombre) {
             this.cedulaRegistrada = false;
+            const partes = nombre.split("/");
+            const numeroCedula = partes[1];
             try {
-                const data = await buscarPorCedulaAyudanteFachada(this.cedulaSolicitud);
-                const lista = [];
-                lista.push(data.cedula);
-                this.listaAyudantes=lista;
+                const data = await buscarPorCedulaAyudanteFachada(numeroCedula);
+                this.opcSeleccionado.nombre=data.nombre;
+                this.opcSeleccionado.cedula=data.cedula;
                 this.filtroCarta = data.cedula;
+                console.log(this.filtroCarta);
                 this.cedulaRegistrada = true;
             } catch {
                 this.cedulaRegistrada = false;
             }
         },
-        async verificarNombre(nombre) {
-            this.cedulaRegistrada = false;
+        async verificarDocente(nombre) {
+            const partes = nombre.split("/");
+            const numeroCedula = partes[1];
             try {
-                const data = await buscarPorNombreAyudanteFachada(nombre);
-                this.filtroCarta = data[0].cedula;
-                this.cedulaRegistrada = true;
+                const data = await buscarPorCedulaDocenteFachada(numeroCedula);
+                this.docenteSeleccionado = data.cedula;
+                this.opcSeleccionado.nombre=data.nombre;
+                this.opcSeleccionado.cedula=data.cedula;
             } catch {
-                this.cedulaRegistrada = false;
+                alert("No existe el docente.")
             }
         },
-        async buscarAyudantes() {
+        async buscarAyudantesNombres() {
             try {
                 const lista = [];
                 const data = await buscarPorNombreAyudanteFachada(this.cedulaSolicitud);
@@ -258,13 +245,33 @@ export default {
                 alert("Se dio un problema al buscar ayudantes");
             }
         },
-        async buscarDocentes() {
+        async buscarAyudantesCedula() {
+            try {
+                const lista = [];
+                const data = await buscarPorCedulaAyudanteFachada(this.cedulaSolicitud);
+                lista.push(data.nombre+"/"+data.cedula);
+                this.listaAyudantes = lista;
+            } catch {
+                alert("Se dio un problema al buscar ayudantes");
+            }
+        },
+        async buscarDocentesNombres() {
             try {
                 const lista = [];
                 const data = await buscarPorNombreDocenteFachada(this.cedulaSolicitudDocente);
                 data.forEach((item) => {
-                    lista.push(item.nombre);
+                    lista.push(item.nombre+"/"+item.cedula);
                 });
+                this.listaDocentes = lista;
+            } catch {
+                alert("Se dio un problema al buscar docentes");
+            }
+        },
+        async buscarDocentesCedula() {
+            try {
+                const lista = [];
+                const data = await buscarPorCedulaDocenteFachada(this.cedulaSolicitudDocente);
+                lista.push(data.nombre+"/"+data.cedula);
                 this.listaDocentes = lista;
             } catch {
                 alert("Se dio un problema al buscar docentes");
@@ -318,6 +325,7 @@ export default {
                 };
             }
             console.log(data);
+            console.log(data.codigoBienes);
 
             if (this.verificarCampos()) {
                 const registro = await guardarPrestamoFachada(data);
@@ -335,7 +343,7 @@ export default {
         verificarCampos() {
             try {
                 if (
-                    (this.idCartaCompromiso != "" || this.cedulaSolicitudDocente != "") &&
+                    (this.idCartaCompromiso != "" || this.docenteSeleccionado != "") &&
                     this.codigoBienes.length != 0
                 ) {
                     return true;
@@ -401,20 +409,22 @@ export default {
     watch: {
         async cedulaSolicitud() {
             const val = parseInt(this.cedulaSolicitud);
-            if (this.cedulaSolicitud.length == 10 && !isNaN(val)) {
-                this.verificarCedula();
-            } /*else if (this.cedulaSolicitud.length > 4 && isNaN(val)) {
-                this.verificarNombre(this.cedulaSolicitud);
-            }*/ else if (this.cedulaSolicitud.length == 4 && isNaN(val) && !this.elegirOpc) {
-                this.buscarAyudantes();
+            if (this.cedulaSolicitud.length > 15) {
+                this.verificarAyudante(this.cedulaSolicitud);
+            }else if (this.cedulaSolicitud.length >= 4 && isNaN(val)) {
+                this.buscarAyudantesNombres();
+            }else if(this.cedulaSolicitud.length == 10 && !isNaN(val)){
+                this.buscarAyudantesCedula();
             }
         },
         async cedulaSolicitudDocente() {
             const val = parseInt(this.cedulaSolicitudDocente);
-            if (this.cedulaSolicitudDocente.length == 10 && !isNaN(val)) {
-                //this.verificarCedula();
-            }else if (this.cedulaSolicitudDocente.length == 4 && isNaN(val)) {
-                this.buscarDocentes();
+            if (this.cedulaSolicitudDocente.length > 15) {
+                this.verificarDocente(this.cedulaSolicitudDocente);
+            }else if (this.cedulaSolicitudDocente.length >= 4 && isNaN(val)) {
+                this.buscarDocentesNombres();
+            }else if(this.cedulaSolicitudDocente.length == 10 && !isNaN(val)){
+                this.buscarDocentesCedula();
             }
         },
         async buscarProyectores() {

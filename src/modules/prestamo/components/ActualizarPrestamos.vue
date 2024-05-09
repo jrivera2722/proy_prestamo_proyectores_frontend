@@ -9,7 +9,7 @@
                     <label for="asiInput">Ingresa tu número de cédula: </label>
                 </div>
                 <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
-                    @obtenerIdCarta="recibirIdCarta" style="margin-left: -40%;" />
+                    @obtenerIdCarta="recibirIdCarta" style="margin-left: -45%; height: 100%" />
                 <div v-else>
                     <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
                 </div>
@@ -117,7 +117,7 @@ import { buscarPorPrestamoTipoBienFachada, buscarPorPrestamoTipoDisponiblesBienF
 import { buscarPorCedulaAyudanteFachada } from '@/modules/ayudante/helpers/AyudanteCliente';
 import { actualizarPrestamoFachada, buscarPorIdPrestamoFachada } from '../helpers/PrestamoCliente';
 import { buscarPorIdCartaCompromisoFachada } from '@/modules/cartaCompromiso/helpers/CartaCompromisoCliente';
-
+import { buscarPorCedulaDocenteFachada, buscarPorNombreDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
 export default {
     components: {
         ListaCartasCompromiso,
@@ -165,26 +165,30 @@ export default {
         async buscarPrestamo() {
             let prestamo;
             let carta;
+            let docente;
             try {
                 prestamo = await buscarPorIdPrestamoFachada(this.id);
                 if(prestamo.idCartaCompromiso!=null){
                     carta = await buscarPorIdCartaCompromisoFachada(prestamo.idCartaCompromiso);
                 }else if(prestamo.cedulaDocente!=null){
                     //Poner el buscar por prestamo docente
-                    carta = null;
+                    docente = await buscarPorCedulaDocenteFachada(prestamo.cedulaDocente);
                 }
                 
             } catch {
                 this.redirigirAError();
                 return;
             }
-
+            if(carta!=null){
+                this.cedulaSolicitud = carta.cedulaAyudante;
+                this.idCartaCompromiso = carta.id;
+            }else if(docente!=null){
+                this.cedulaSolicitud=docente.cedula;
+            }
             this.prestamo = prestamo;
-            console.log(this.prestamo.tipoBienes)
-            this.cedulaSolicitud = carta.cedulaAyudante;
-            this.idCartaCompromiso = carta.id;
             this.obtenerVariablesIndependientes(prestamo.codigoBienes);
             this.devuelto = prestamo.devuelto;
+            
         },
         obtenerVariablesIndependientes(lista) {
             var bienes = [];

@@ -19,7 +19,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        <tr v-for="prestamo in prestamos" :key="prestamo.id">
+                        <tr v-for="prestamo in prestamos" :key="prestamo.id" :class="claseFila(prestamo.devuelto)">
                             <td v-if="admin">{{ prestamo.id }}</td>
                             <td>{{ formatDate(prestamo.fechaPrestamo) }}</td>
                             <td v-if="prestamo.devuelto">Sí</td>
@@ -109,12 +109,30 @@ export default {
             const user = sessionStorage.getItem("user");
             const data = await buscarPorCedulaPrestadorFachada(user);
             this.admin=data.administrador;
+        },
+        claseFila(docente) {
+            if(!this.filtrar) {
+                return {
+                    'table-info': docente === true,
+                    'table-danger': docente === false
+                };
+            }
         }
     },
     mounted() {
         this.consultarAdmin();
         this.buscarPrestamos();
     },
+    props: {
+        filtrar: {
+            type: Boolean,
+            default: false,
+            required: false
+        },
+        cedulaFiltro: {
+            type: String
+        }
+    }
 }
 </script>
 
