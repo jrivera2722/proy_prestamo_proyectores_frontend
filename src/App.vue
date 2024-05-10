@@ -19,7 +19,7 @@
           <label for="inpUser">Usuario</label>
         </div>
         <div class="form-floating">
-          <input type="password" id="inpPass" v-model="password" class="form-control" placeholder="********">
+          <input @keypress.enter="log_in" type="password" id="inpPass" v-model="password" class="form-control" placeholder="********">
           <label for="inpPass">Contraseña</label>
         </div>
       </div>

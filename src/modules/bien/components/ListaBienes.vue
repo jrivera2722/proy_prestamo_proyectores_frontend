@@ -134,17 +134,24 @@ td, th {
     align-items: center;
     justify-content: center;
     height: calc(100vh - 70px);
+    width: 98%;
     background-color: #6999db;
 }
 
 .tabla {
-  margin-left: 2%;
-  width: fit-content;
+  margin: 2%;
+  width: auto;
+
+}
+
+td, th {
+    text-align: center;
+    vertical-align: middle;
 }
 
 .info {
   max-height: 70vh;
-  overflow-y: auto;
+  overflow-y: auto; /*scroll*/
 }
 
 /*View this observality for changed in others pags web.*/
@@ -166,4 +173,11 @@ caption {
   font-size: 30px;
   text-align: center;
 }
+
+@media screen and (max-width:700px) { /*responsive*/
+  .tabla{
+    overflow-x: auto;
+  }
+}
+
 </style>

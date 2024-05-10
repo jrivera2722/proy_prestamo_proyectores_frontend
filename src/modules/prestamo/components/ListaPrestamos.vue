@@ -33,8 +33,10 @@
                             <td v-if="prestamo.cedulaReceptor">{{ nombrePrestadores[prestamo.cedulaReceptor] }}</td>
                             <td v-else></td>
                             <td>{{ prestamo.codigoBienes.join(", ") }}</td>
-                            <td><button class="btn btn-dark"
-                                    @click="redirigirActualizarPrestamo(prestamo.id)">Editar</button></td>
+                            <td class="casilla-btns"><button class="btn btn-dark"
+                                    @click="redirigirActualizarPrestamo(prestamo.id)">Editar</button>
+                                <button class="btn btn-dark"
+                                    @click="ActualizarDevolucion(prestamo.id)">Devuelto</button></td>
                         </tr>
                     </tbody>
                 </div>
@@ -51,6 +53,7 @@ import router from "@/router/router";
 import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
 import { buscarPrestamosFachada } from '../helpers/PrestamoCliente';
 import { buscarPorCedulaPrestadorFachada } from '@/modules/prestador/helpers/PrestadorCliente';
+import { actualizarPrestamoFachada, buscarPorIdPrestamoFachada } from '../helpers/PrestamoCliente';
 
 export default {
     data() {
@@ -117,7 +120,19 @@ export default {
                     'table-danger': docente === false
                 };
             }
+        },async ActualizarDevolucion(id) {
+            console.log("funcion");
+            for (let i = 0; i < this.prestamos.length; i++) {
+                if(this.prestamos[i].id==id){
+                    
+                    const data = this.prestamos[i]
+                    data.devuelto = data.devuelto === true? false : true;
+                    const registro = await actualizarPrestamoFachada(data, id);
+                }
+            }
+            
         }
+
     },
     mounted() {
         this.consultarAdmin();
@@ -168,10 +183,29 @@ thead {
 }
 
 td,
-th {
+th .casilla-btns{
     text-align: center;
     vertical-align: middle;
-
+    
     width: 10%;
+}
+
+button{
+    margin: 0 5px 5px 0;
+}
+.casilla-btns{
+    width: fit-content;
+}
+
+@media screen and (width=700px) {
+    td{    
+        display: flex;
+        width: 405px;
+        overflow-x: auto;
+    }
+    .tabla{
+        overflow-x: auto;
+    }
+    
 }
 </style>
