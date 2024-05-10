@@ -29,36 +29,36 @@ export const actualizarPrestadorFachada = async (bodyPrestador, cedula) => {
 }
 
 const guardarPrestador = async (bodyPrestador) => {
-    const data = axios.post(`http://localhost:8080/API/v1.0/Prestamos/prestadores`, bodyPrestador).then(r => r.data);
+    const data = axios.post(`http://localhost:8082/API/v1.0/Prestamos/prestadores`, bodyPrestador).then(r => r.data);
     return data;
 }
 
 const loginPrestador = async (bodyPrestador) => {
-    const data = axios.post(`http://localhost:8080/API/v1.0/Prestamos/prestadores/login`, bodyPrestador).then(r => r.data);
+    const data = axios.post(`http://localhost:8082/API/v1.0/Prestamos/prestadores/login`, bodyPrestador).then(r => r.data);
     return data;
 }
 
 const buscarPorCedulaPrestador = async (cedula) => {
-    const data = await axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestadores/${cedula}`).then(r => r.data);
+    const data = await axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestadores/${cedula}`).then(r => r.data);
     return data;
 }
 
 const buscarPorNombrePrestador = async (nombre) => {
-    const data = await axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestadores/n/${nombre}`).then(r => r.data);
+    const data = await axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestadores/n/${nombre}`).then(r => r.data);
     return data;
 }
 
 const buscarTodosPrestadores = async () => {
-    const data = await axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestadores`).then(r => r.data);
+    const data = await axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestadores`).then(r => r.data);
     return data;
 }
 
 const buscarAdminPrestador = async (admin) => {
-    const data = await axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestadores/a/${admin}`).then(r => r.data);
+    const data = await axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestadores/a/${admin}`).then(r => r.data);
     return data;
 }
 
 const actualizarPrestador = async (bodyPrestador, cedula) => {
-    const data = await axios.put(`http://localhost:8080/API/v1.0/Prestamos/prestadores/${cedula}`, bodyPrestador).then(r => r.data);
+    const data = await axios.put(`http://localhost:8082/API/v1.0/Prestamos/prestadores/${cedula}`, bodyPrestador).then(r => r.data);
     return data;
 }

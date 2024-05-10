@@ -120,16 +120,29 @@ export default {
                     'table-danger': docente === false
                 };
             }
-        },async ActualizarDevolucion(id) {
-            console.log("funcion");
-            for (let i = 0; i < this.prestamos.length; i++) {
+        },
+        async ActualizarDevolucion(id) {
+            console.log("funcion"+id);
+            const log = sessionStorage.getItem("user");
+            try {
+                const prestamoActualizar=await buscarPorIdPrestamoFachada(id);
+                prestamoActualizar.devuelto = prestamoActualizar.devuelto === true? false : true;
+                prestamoActualizar.cedulaReceptor = log;
+                const registro = await actualizarPrestamoFachada(prestamoActualizar, id);
+                if (registro) {
+                    this.buscarPrestamos();
+                }
+            } catch (error) {
+                alert("No se puede devolver el prestamo ",id);
+            }
+            /*for (let i = 0; i < this.prestamos.length; i++) {
                 if(this.prestamos[i].id==id){
                     
                     const data = this.prestamos[i]
                     data.devuelto = data.devuelto === true? false : true;
                     const registro = await actualizarPrestamoFachada(data, id);
                 }
-            }
+            }*/
             
         }
 

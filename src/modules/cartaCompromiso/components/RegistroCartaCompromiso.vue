@@ -12,7 +12,7 @@
                         placeholder="Primero">
                         <option v-for="opcion in opcionesSemestre" :key="opcion" :value="opcion">{{ opcion }}</option>
                     </select>
-                    <label for="semInput">Semestre</label>
+                    <label style="color: #462255;" for="semInput">Semestre</label>
                 </div>
                 <div class="form-floating">
                     <input id="parInput" type="number" v-model="paralelo" class="form-control" placeholder="0">
@@ -40,22 +40,22 @@
                 </div>
                 <div class="form-floating">
                     <input id="numDiasInput" type="number" v-model="numDias" class="form-control" placeholder="1">
-                    <label for="numDiasInput">Número de días</label>
+                    <label style="color: #462255;" for="numDiasInput">Número de días</label>
                 </div>
                 <ul>
                     <li v-for="(item, index) in dias" :key="index">
-                        <h4 style="color: white">Horario {{ index + 1 }}</h4>
+                        <h4 style="color: #462255; font-family: Georgia; font-size: 28px">Horario {{ index + 1 }}</h4>
                         <div class="form-floating">
                             <select name="diaInput" v-model="item.dia" class="form-control" placeholder="Lunes">
                                 <option v-for="opcion in opcionesDia" :key="opcion" :value="opcion">{{ opcion }}
                                 </option>
                             </select>
-                            <label for="diaInput">Día</label>
+                            <label style="color: #462255" for="diaInput">Día</label>
                         </div>
                         <div class="form-floating">
                             <input id="horInput" type="time" v-model="item.horaPrestamo" class="form-control"
                                 placeholder="00:00">
-                            <label for="horInput">Hora del préstamo</label>
+                            <label for="horInput" style="color: #462255;">Hora del préstamo</label>
                         </div>
                         <div class="form-floating">
                             <select name="diaDevInput" v-model="item.diaDevolucion" class="form-control"
@@ -63,12 +63,12 @@
                                 <option v-for="opcion in opcionesDia" :key="opcion" :value="opcion">{{ opcion }}
                                 </option>
                             </select>
-                            <label for="diaDevInput">Día Devolución</label>
+                            <label for="diaDevInput" style="color: #462255">Día Devolución</label>
                         </div>
                         <div class="form-floating">
                             <input id="horDevInput" type="time" v-model="item.horaDevolucion" class="form-control"
                                 placeholder="Química I">
-                            <label for="horDevInput">Hora de la devolución</label>
+                            <label for="horDevInput" style="color: #462255">Hora de la devolución</label>
                         </div>
                     </li>
                 </ul>
@@ -391,6 +391,7 @@ export default {
 
 h1 {
     margin-bottom: 3%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 input,

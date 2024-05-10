@@ -25,31 +25,31 @@ export const actualizarPrestamoFachada = async (bodyPrestamo, id) => {
 }
 
 const guardarPrestamo = async (bodyPrestamo) => {
-    const data = axios.post(`http://localhost:8080/API/v1.0/Prestamos/prestamos`, bodyPrestamo).then(r => r.data);
+    const data = axios.post(`http://localhost:8082/API/v1.0/Prestamos/prestamos`, bodyPrestamo).then(r => r.data);
     return data;
 }
 
 const buscarPorIdPrestamo = async (id) => {
-    const data = axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestamos/${id}`).then(r => r.data);
+    const data = axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestamos/${id}`).then(r => r.data);
     return data;
 }
 
 const buscarPorFechaPrestamo = async (fecha) => {
-    const data = axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestamos/f?fecha=${fecha}`).then(r => r.data);
+    const data = axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestamos/f?fecha=${fecha}`).then(r => r.data);
     return data;
 }
 
 const buscarPrestamosDevueltos = async (devuelto) => {
-    const data = axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestamos/d?devuelto=${devuelto}`).then(r => r.data);
+    const data = axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestamos/d?devuelto=${devuelto}`).then(r => r.data);
     return data;
 }
 
 const buscarPrestamos = async () => {
-    const data = axios.get(`http://localhost:8080/API/v1.0/Prestamos/prestamos`).then(r => r.data);
+    const data = axios.get(`http://localhost:8082/API/v1.0/Prestamos/prestamos`).then(r => r.data);
     return data;
 }
 
 const actualizarPrestamo = async (bodyPrestamo, id) => {
-    const data = await axios.put(`http://localhost:8080/API/v1.0/Prestamos/prestamos/${id}`, bodyPrestamo).then(r => r.data);
+    const data = await axios.put(`http://localhost:8082/API/v1.0/Prestamos/prestamos/${id}`, bodyPrestamo).then(r => r.data);
     return data;
 }

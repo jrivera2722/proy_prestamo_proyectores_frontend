@@ -538,6 +538,7 @@ export default {
 h1 {
     color: #363636;
     margin-bottom: 3%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 input,

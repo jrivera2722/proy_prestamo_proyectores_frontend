@@ -44,8 +44,9 @@
           type="checkbox"
           v-model="registroBien"
           @click="toggleCheckboxes(5)"
+          disabled
         />
-        <label class="btn btn-outline-primary" for="inpBien">Bien</label>
+        <label class="btn btn-outline-primary" for="inpBien" >Bien</label>
 
         <input
           class="btn-check"
@@ -161,9 +162,14 @@ export default {
 <style scoped>
 
 .container {
-  /*margin-top: 2.5%;*/
-  /*height: calc(100vh - 150px);*/
-  background: #6999db;
+  margin-top: 2%;
+  height: calc(115vh);
+  overflow-y: hidden;
+  /* background-color: #6999db; */
+}
+
+.btn-group{
+  background: #f5f6f7;
 }
 
 label {

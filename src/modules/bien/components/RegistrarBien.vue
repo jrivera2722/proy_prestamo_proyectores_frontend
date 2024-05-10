@@ -20,13 +20,13 @@
                     <select name="estInput" id="estInput" v-model="estado" class="form-control" placeholder="Bueno">
                         <option v-for="opcion in opcionesEstado" :key="opcion" :value="opcion">{{ opcion }}</option>
                     </select>
-                    <label for="estInput">Estado</label>
+                    <label style="color: #462255" for="estInput">Estado</label>
                 </div>
                 <div class="form-floating">
                     <select name="tipInput" id="tipInput" v-model="tipo" class="form-control" placeholder="Proyector">
                         <option v-for="opcion in opcionesTipo" :key="opcion" :value="opcion">{{ opcion }}</option>
                     </select>
-                    <label for="tipInput">Tipo</label>
+                    <label style="color: #462255;" for="tipInput">Tipo</label>
                 </div>
                 <div>
                     <button class="btn btn-outline-secondary" @click="registrarBien"
@@ -155,6 +155,7 @@ export default {
 h1 {
     color: #363636;
     margin-bottom: 3%;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 input,
