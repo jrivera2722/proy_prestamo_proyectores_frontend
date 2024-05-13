@@ -163,8 +163,8 @@ export default {
 
 .container {
   margin-top: 2%;
-  height: calc(115vh);
-  overflow-y: hidden;
+  /* height: calc(115vh);
+  overflow-y: hidden; */
   /* background-color: #6999db; */
 }
 

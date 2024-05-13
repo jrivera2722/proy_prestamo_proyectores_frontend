@@ -90,6 +90,7 @@ export default {
     align-items: center;
     justify-content: center;
     margin-top: 2%;
+    height: calc(80vh);
 }
 
 .formulario {

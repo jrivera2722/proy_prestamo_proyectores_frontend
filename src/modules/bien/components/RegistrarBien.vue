@@ -49,7 +49,7 @@ export default {
             estado: "",
             disponible: false,
             tipo: "",
-            opcionesEstado: ["Bueno", "Regular", "De baja", "Chatarrización"],
+            opcionesEstado: ["Buena", "Regular", "Mala", "De baja", "Chatarrización"],
             opcionesTipo:
                 [
                     "Proyector",

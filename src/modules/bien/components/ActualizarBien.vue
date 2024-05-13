@@ -52,7 +52,7 @@ export default {
             estado: "",
             disponible: false,
             tipo: "",
-            opcionesEstado: ["Bueno", "Regular", "De baja"],
+            opcionesEstado: ["Buena", "Regular", "Mala", "De baja", "Chatarrización"],
             opcionesTipo: ["Proyector", "Cable HDMI"
             , "Cable VGA", "Extensión"
             , "Cortapicos","Parlantes"
@@ -72,6 +72,7 @@ export default {
                 nombre: this.nombre,
                 numSerie: this.numSerie,
                 estado: this.estado,
+                disponible:this.disponible,
                 tipo: this.cambiarTipo(this.tipo)
             };
             try {
@@ -101,6 +102,7 @@ export default {
             this.nombre = bien.nombre;
             this.numSerie = bien.numSerie;
             this.estado = bien.estado;
+            this.disponible=bien.disponible;
             this.tipo = this.cambiarTipoATexto(bien.tipo);
         },
         async redirigirAVerBien() {
