@@ -16,7 +16,7 @@
 
             <div v-if="filtro == 'Fecha de prestamos'">
                 <div class="form-floating">
-                    <input type="date" class="form-control" id="floatingInput2" v-model="filtroText" />
+                    <input type="datetime-local" class="form-control" id="floatingInput2" v-model="filtroText" />
                     <label for="floatingInput2"><strong>Fecha</strong></label>
                 </div>
             </div>
