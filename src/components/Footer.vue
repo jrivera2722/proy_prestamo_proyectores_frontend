@@ -1,7 +1,7 @@
 <template>
     <div class="text-center p-3" style="font-weight: bold; background-color: #3E78B2">
         <h5 class="texto">
-            Desarrollado por Ariel Maldonado & Axel Flores | Todos los Derechos Reservados 2024 ©
+            Desarrollado por Ariel Maldonado, Axel Flores, Edwin Piruch & Anthony | Todos los Derechos Reservados 2024 ©
             <br>
             Responsable: Ing. Jorge Rivera
         </h5>

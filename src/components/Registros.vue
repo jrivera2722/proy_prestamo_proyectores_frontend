@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" >
     <div>
       <div
         class="btn-group"
@@ -110,6 +110,7 @@ export default {
   },
   methods: {
     toggleCheckboxes(opcion) {
+
       switch (opcion) {
         case 1:
           this.registroDocente = false;
@@ -163,8 +164,8 @@ export default {
 
 .container {
   margin-top: 2%;
-  height: calc(115vh);
-  overflow-y: hidden;
+  /* height: calc(115vh);
+  overflow-y: hidden; */
   /* background-color: #6999db; */
 }
 
@@ -175,4 +176,10 @@ export default {
 label {
   font-weight: bold;
 }
+
+/* Posibles cambios para screen */
+/* @media screen and (max-width: 23px) {
+  
+} */
+
 </style>
