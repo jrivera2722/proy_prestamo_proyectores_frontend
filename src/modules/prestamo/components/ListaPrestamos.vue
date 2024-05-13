@@ -1,5 +1,35 @@
 <template>
     <div class="contenedor">
+        <div class="filtros">
+            <caption style="color: #1d3557">
+                Filtros
+            </caption>
+
+            <div class="form-floating">
+                <select class="form-select" id="floatingSelect" v-model="filtro">
+                    <option v-for="opcion in opciones" :key="opcion" :value="opcion">
+                        {{ opcion }}
+                    </option>
+                </select>
+                <label for="floatingSelect"><strong>Filtrar por:</strong></label>
+            </div>
+
+            <div v-if="filtro == 'Fecha de prestamos'">
+                <div class="form-floating">
+                    <input type="date" class="form-control" id="floatingInput2" v-model="filtroText" />
+                    <label for="floatingInput2"><strong>Fecha</strong></label>
+                </div>
+            </div>
+
+
+            <div v-if="filtroText">
+                <button @click="buscarBienes" class="btn btn-primary" style="margin-right: 5px;">Filtrar</button>
+                <button @click="buscarBienesSF" class="btn btn-danger">
+                    Eliminar filtro
+                </button>
+            </div>
+        </div>
+
         <div class="tabla">
             <table class="table table-hover caption-top" v-if="prestamos.length > 0">
                 <caption>Lista de Préstamos</caption>
@@ -36,7 +66,8 @@
                             <td class="casilla-btns"><button class="btn btn-dark"
                                     @click="redirigirActualizarPrestamo(prestamo.id)">Editar</button>
                                 <button class="btn btn-dark"
-                                    @click="ActualizarDevolucion(prestamo.id)">Devuelto</button></td>
+                                    @click="ActualizarDevolucion(prestamo.id)">Devuelto</button>
+                            </td>
                         </tr>
                     </tbody>
                 </div>
@@ -51,7 +82,7 @@
 <script>
 import router from "@/router/router";
 import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
-import { buscarPrestamosFachada } from '../helpers/PrestamoCliente';
+import { buscarPrestamosFachada,buscarPorFechaPrestamoFachada } from '../helpers/PrestamoCliente';
 import { buscarPorCedulaPrestadorFachada } from '@/modules/prestador/helpers/PrestadorCliente';
 import { actualizarPrestamoFachada, buscarPorIdPrestamoFachada } from '../helpers/PrestamoCliente';
 
@@ -61,117 +92,140 @@ export default {
             prestamos: [],
             nombreDocentes: [],
             nombrePrestadores: [],
-            admin:true
+            admin: true,
+
+            filtro: "",
+            filtroText: "",
+            opciones: [
+                "Fecha de prestamos",
+            ],
+            mostrarOpciones: false,
         };
     },
     methods: {
+        async buscarBienes() {
+            var bienes = [];
+
+            if (this.filtro == "") {
+                bienes = await buscarPrestamos();
+            } else if (this.filtro == "Fecha de prestamos") {
+                try {
+                    var b = await buscarPorFechaPrestamoFachada(this.filtroText.tod);
+                    bienes.push(b);
+                } catch {
+                    alert("Ingrese una fecha válida.");
+                    return;
+                }
+            }
+        },
         async buscarPrestamos() {
-            let data = [];
-            data = await buscarPrestamosFachada();
-            if (data.length != 0) {
-                this.prestamos = data;
+                    let data = [];
+                    data = await buscarPrestamosFachada();
+                    if (data.length != 0) {
+                        this.prestamos = data;
 
-                for (let i = 0; i < this.prestamos.length; i++) {
-                    this.buscarPrestador(this.prestamos[i].cedulaPrestador);
-                    if (this.prestamos[i].cedulaDocente)
-                        this.buscarDocente(this.prestamos[i].cedulaDocente);
-                    if (this.prestamos[i].cedulaReceptor)
-                        this.buscarPrestador(this.prestamos[i].cedulaReceptor);
-                }
-            }
-        },
+                        for (let i = 0; i < this.prestamos.length; i++) {
+                            this.buscarPrestador(this.prestamos[i].cedulaPrestador);
+                            if (this.prestamos[i].cedulaDocente)
+                                this.buscarDocente(this.prestamos[i].cedulaDocente);
+                            if (this.prestamos[i].cedulaReceptor)
+                                this.buscarPrestador(this.prestamos[i].cedulaReceptor);
+                        }
+                    }
+                },
         async buscarDocente(cedula) {
-            const data = await buscarPorCedulaDocenteFachada(cedula);
-            this.nombreDocentes[data.cedula] = data.nombre;
-        },
+                    const data = await buscarPorCedulaDocenteFachada(cedula);
+                    this.nombreDocentes[data.cedula] = data.nombre;
+                },
         async buscarPrestador(cedula) {
-            const data = await buscarPorCedulaPrestadorFachada(cedula);
-            this.nombrePrestadores[data.cedula] = data.nombre;
-        },
-        formatDate(fecha) {
-            if (!fecha) {
-                return "";
-            }
+                    const data = await buscarPorCedulaPrestadorFachada(cedula);
+                    this.nombrePrestadores[data.cedula] = data.nombre;
+                },
+                formatDate(fecha) {
+                    if (!fecha) {
+                        return "";
+                    }
 
-            const options = {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "numeric",
-                minute: "numeric",
-                second: "numeric",
-                hour12: false,
-            };
-            return new Date(fecha).toLocaleDateString("es-ES", options);
-        },
+                    const options = {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "numeric",
+                        second: "numeric",
+                        hour12: false,
+                    };
+                    return new Date(fecha).toLocaleDateString("es-ES", options);
+                },
         async redirigirActualizarPrestamo(id) {
-            const ruta = `/prestamos/actualizar/${id}`;
-            await router.push({ path: ruta });
-        },
+                    const ruta = `/prestamos/actualizar/${id}`;
+                    await router.push({ path: ruta });
+                },
         async consultarAdmin() {
-            const user = sessionStorage.getItem("user");
-            const data = await buscarPorCedulaPrestadorFachada(user);
-            this.admin=data.administrador;
-        },
-        claseFila(docente) {
-            if(!this.filtrar) {
-                return {
-                    'table-info': docente === true,
-                    'table-danger': docente === false
-                };
-            }
-        },
+                    const user = sessionStorage.getItem("user");
+                    const data = await buscarPorCedulaPrestadorFachada(user);
+                    this.admin = data.administrador;
+                },
+                claseFila(docente) {
+                    if (!this.filtrar) {
+                        return {
+                            'table-info': docente === true,
+                            'table-danger': docente === false
+                        };
+                    }
+                },
         async ActualizarDevolucion(id) {
-            console.log("funcion"+id);
-            const log = sessionStorage.getItem("user");
-            try {
-                const prestamoActualizar=await buscarPorIdPrestamoFachada(id);
-                prestamoActualizar.devuelto = prestamoActualizar.devuelto === true? false : true;
-                prestamoActualizar.cedulaReceptor = log;
-                const registro = await actualizarPrestamoFachada(prestamoActualizar, id);
-                if (registro) {
-                    this.buscarPrestamos();
-                }
-            } catch (error) {
-                alert("No se puede devolver el prestamo ",id);
-            }
-            /*for (let i = 0; i < this.prestamos.length; i++) {
-                if(this.prestamos[i].id==id){
-                    
-                    const data = this.prestamos[i]
-                    data.devuelto = data.devuelto === true? false : true;
-                    const registro = await actualizarPrestamoFachada(data, id);
-                }
-            }*/
-            
-        }
+                    console.log("funcion" + id);
+                    const log = sessionStorage.getItem("user");
+                    try {
+                        const prestamoActualizar = await buscarPorIdPrestamoFachada(id);
+                        prestamoActualizar.devuelto = prestamoActualizar.devuelto === true ? false : true;
+                        prestamoActualizar.cedulaReceptor = log;
+                        const registro = await actualizarPrestamoFachada(prestamoActualizar, id);
+                        if (registro) {
+                            this.buscarPrestamos();
+                        }
+                    } catch (error) {
+                        alert("No se puede devolver el prestamo ", id);
+                    }
+                    /*for (let i = 0; i < this.prestamos.length; i++) {
+                        if(this.prestamos[i].id==id){
+                            
+                            const data = this.prestamos[i]
+                            data.devuelto = data.devuelto === true? false : true;
+                            const registro = await actualizarPrestamoFachada(data, id);
+                        }
+                    }*/
 
-    },
-    mounted() {
-        this.consultarAdmin();
-        this.buscarPrestamos();
-    },
-    props: {
-        filtrar: {
-            type: Boolean,
+                }
+
+            },
+            mounted() {
+                this.consultarAdmin();
+                this.buscarPrestamos();
+            },
+            props: {
+                filtrar: {
+                    type: Boolean,
             default: false,
-            required: false
-        },
-        cedulaFiltro: {
-            type: String
-        }
+        required: false
+    },
+    cedulaFiltro: {
+        type: String
     }
+}
 }
 </script>
 
 <style scoped>
 .contenedor {
-    display: flex;
+    display: grid;
     align-items: center;
     justify-content: center;
     height: calc(100vh - 70px);
     background-color: #6999db;
 }
+
 .tabla {
     margin-left: 2%;
     width: 96%;
@@ -196,29 +250,41 @@ thead {
 }
 
 td,
-th .casilla-btns{
+th .casilla-btns {
     text-align: center;
     vertical-align: middle;
-    
+
     width: 10%;
 }
 
-button{
+button {
     margin: 0 5px 5px 0;
 }
-.casilla-btns{
+
+.casilla-btns {
     width: fit-content;
 }
 
+.filtros {
+
+    width: 50%;
+    border: 1px solid;
+    padding: 50px;
+    margin-left: 25%;
+    background-color: #a8bfdc;
+    position: relative;
+}
+
 @media screen and (width=700px) {
-    td{    
+    td {
         display: flex;
         width: 405px;
         overflow-x: auto;
     }
-    .tabla{
+
+    .tabla {
         overflow-x: auto;
     }
-    
+
 }
 </style>
