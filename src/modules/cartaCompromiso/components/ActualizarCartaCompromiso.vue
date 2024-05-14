@@ -4,7 +4,8 @@
             <div class="formulario">
                 <h1>Actualizar Carta de Compromiso</h1>
                 <div class="form-floating">
-                    <input id="asiInput" type="text" v-model="asignatura" class="form-control" placeholder="XXXXXXXXXX">
+                    <input id="asiInput" type="text" v-model="asignatura" class="form-control" placeholder="XXXXXXXXXX"
+                        @input="mayusculas">
                     <label for="asiInput">Asignatura</label>
                 </div>
                 <div class="form-floating">
@@ -206,6 +207,9 @@ export default {
             const user = sessionStorage.getItem("user");
             const data = await buscarPorCedulaPrestadorFachada(user);
             this.admin=!data.administrador;
+        },
+        mayusculas(event) {
+            event.target.value = event.target.value.toUpperCase();
         }
     },
     watch: {

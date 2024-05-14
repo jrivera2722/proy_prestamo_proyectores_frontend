@@ -9,7 +9,8 @@
           <label for="cedInput">Cédula</label>
         </div>
         <div class="form-floating">
-          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX">
+          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+            @input="mayusculas">
           <label for="nomInput">Nombre</label>
         </div>
         <button class="btn btn-dark" @click="actualizarDocente">Editar</button>
@@ -95,6 +96,9 @@ export default {
     },
     restrictInput(event) {
       event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    },
+    mayusculas(event) {
+      event.target.value = event.target.value.toUpperCase();
     },
     async consultarAdmin() {
       const user = sessionStorage.getItem("user");

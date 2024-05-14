@@ -4,11 +4,13 @@
       <div class="formulario">
         <h1>Registro de Prestadores</h1>
         <div class="form-floating">
-          <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX"/>
+          <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput"
+            placeholder="XXXXXXXXXX" />
           <label for="cedInput">Cédula</label>
         </div>
         <div class="form-floating">
-          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"/>
+          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+            @input="mayusculas" />
           <label for="nomInput">Nombre</label>
         </div>
         <div class="btn-group" style="margin-top: 1%;">
@@ -16,17 +18,17 @@
           <label class="btn btn-outline-secondary" for="admInput">Administrador</label>
         </div>
         <div class="form-floating">
-          <input id="conInput" type="password" v-model="password" class="form-control" placeholder="XXXXXXXXXX"/>
+          <input id="conInput" type="password" v-model="password" class="form-control" placeholder="XXXXXXXXXX" />
           <label for="conInput">Contraseña</label>
         </div>
         <div class="form-floating">
-          <input id="conCInput" type="password" v-model="confirPassword" class="form-control" placeholder="XXXXXXXXXX"/>
+          <input id="conCInput" type="password" v-model="confirPassword" class="form-control"
+            placeholder="XXXXXXXXXX" />
           <label for="conCInput">Confirmar contraseña</label>
         </div>
         <div>
-          <button class="btn btn-outline-secondary" 
-          @click="registrarPrestador"
-          style="margin-bottom: 1%">Guardar</button>
+          <button class="btn btn-outline-secondary" @click="registrarPrestador"
+            style="margin-bottom: 1%">Guardar</button>
         </div>
       </div>
     </div>
@@ -102,7 +104,10 @@ export default {
     },
     restrictInput(event) {
       event.target.value = event.target.value.replace(/[^0-9]/g, '');
-    }
+    },
+    mayusculas(event) {
+      event.target.value = event.target.value.toUpperCase();
+    },
   }
 };
 </script>

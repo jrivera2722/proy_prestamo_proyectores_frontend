@@ -1,5 +1,5 @@
 <template>
-    <div class="text-center p-3" style="font-weight: bold; background-color: #3E78B2">
+    <div class="text-center p-3" style="font-weight: bold; background-color: #091540">
         <h5 class="texto">
             Desarrollado por Ariel Maldonado, Axel Flores, Edwin Piruch & Anthony Guamaninga | Todos los Derechos Reservados 2024 ©
             <br>

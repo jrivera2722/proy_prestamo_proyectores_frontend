@@ -8,14 +8,14 @@
         <div class="info">
           <thead>
             <tr class="table-dark">
-              <th v-if="false" scope="col">ID</th>
-              <th>Código</th>
-              <th>Nombre</th>
-              <th>Número de Serie</th>
-              <th>Estado</th>
-              <th>Disponible</th>
-              <th>Tipo</th>
-              <th>Acción</th>
+              <th style="width: 10%;" v-if="false" scope="col">ID</th>
+              <th style="width: 10%;">Código</th>
+              <th style="width: 10%;">Nombre</th>
+              <th style="width: 10%;">Número de Serie</th>
+              <th style="width: 10%;">Estado</th>
+              <th style="width: 10%;">Disponible</th>
+              <th style="width: 10%;">Tipo</th>
+              <th style="width: 10%;">Acción</th>
             </tr>
           </thead>
           <tbody class="table-group-divider">
@@ -139,8 +139,8 @@ td, th {
 }
 
 .tabla {
-  margin: 2%;
-  width: auto;
+  margin-inline: 2%;
+  width: 100%;
 
 }
 

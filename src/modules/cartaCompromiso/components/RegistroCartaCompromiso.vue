@@ -4,7 +4,8 @@
             <div class="formulario">
                 <h1>Registro de Cartas de Compromiso</h1>
                 <div class="form-floating">
-                    <input id="asiInput" type="text" v-model="asignatura" class="form-control" placeholder="Química I">
+                    <input id="asiInput" type="text" v-model="asignatura" class="form-control" placeholder="Química I"
+                        @input="mayusculas">
                     <label for="asiInput">Asignatura</label>
                 </div>
                 <div class="form-floating">
@@ -330,9 +331,9 @@ export default {
 
             return new Date(fecha).toLocaleDateString("es-ES", options);
         },
-        convertirAMayusculas() {
-            this.nombre = this.nombre.toUpperCase();
-        },
+        mayusculas(event) {
+            event.target.value = event.target.value.toUpperCase();
+        }
     },
     watch: {
         async cedulaAyudante() {

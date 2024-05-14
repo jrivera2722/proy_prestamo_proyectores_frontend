@@ -1,32 +1,45 @@
 <template>
     <div class="contenedor">
-        <div class="filtros">
-            <caption style="color: #1d3557">
-                Filtros
-            </caption>
+        <div>
+            <div class="filtros">
+                <caption>
+                    Filtros
+                </caption>
 
-            <div class="form-floating">
-                <select class="form-select" id="floatingSelect" v-model="filtro">
-                    <option v-for="opcion in opciones" :key="opcion" :value="opcion">
-                        {{ opcion }}
-                    </option>
-                </select>
-                <label for="floatingSelect"><strong>Filtrar por:</strong></label>
-            </div>
-
-            <div v-if="filtro == 'Fecha de prestamos'">
                 <div class="form-floating">
-                    <input type="datetime-local" class="form-control" id="floatingInput2" v-model="filtroText" />
-                    <label for="floatingInput2"><strong>Fecha</strong></label>
+                    <select class="form-select" id="floatingSelect" v-model="filtro">
+                        <option v-for="opcion in opciones" :key="opcion" :value="opcion">
+                            {{ opcion }}
+                        </option>
+                    </select>
+                    <label for="floatingSelect"><strong>Filtrar por:</strong></label>
                 </div>
-            </div>
 
+                <div v-if="filtro == 'Fecha'">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="floatingInput2" v-model="filtroText" />
+                        <label for="floatingInput2"><strong>Fecha</strong></label>
+                    </div>
+                </div>
 
-            <div v-if="filtroText">
-                <button @click="buscarBienes" class="btn btn-primary" style="margin-right: 5px;">Filtrar</button>
-                <button @click="buscarBienesSF" class="btn btn-danger">
-                    Eliminar filtro
-                </button>
+                <div v-if="filtro == 'Devolución'">
+                    <div class="form-floating">
+                        <select class="form-select" id="floatingSelect" v-model="filtroText">
+                            <option v-for="opcion in opcionesDevolucion" :key="opcion" :value="opcion">
+                                {{ opcion }}
+                            </option>
+                        </select>
+                        <label for="floatingSelect"><strong>Devuelto:</strong></label>
+                    </div>
+                </div>
+
+                <div v-if="filtroText != ''">
+                    <button @click="buscarPrestamosFiltro" class="btn btn-primary"
+                        style="margin-right: 5px;">Filtrar</button>
+                    <button @click="buscarPrestamos" class="btn btn-danger">
+                        Eliminar filtro
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -82,7 +95,7 @@
 <script>
 import router from "@/router/router";
 import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
-import { buscarPrestamosFachada,buscarPorFechaPrestamoFachada } from '../helpers/PrestamoCliente';
+import { buscarPrestamosFachada, buscarPorFechaPrestamoFachada, buscarPrestamosDevueltosFachada } from '../helpers/PrestamoCliente';
 import { buscarPorCedulaPrestadorFachada } from '@/modules/prestador/helpers/PrestadorCliente';
 import { actualizarPrestamoFachada, buscarPorIdPrestamoFachada } from '../helpers/PrestamoCliente';
 
@@ -93,13 +106,13 @@ export default {
             nombreDocentes: [],
             nombrePrestadores: [],
             admin: true,
-
-            filtro: "",
+            filtro: "Fecha",
             filtroText: "",
             opciones: [
-                "Fecha de prestamos",
+                "Fecha", "Devolución"
             ],
             mostrarOpciones: false,
+            opcionesDevolucion: ["Si", "No"]
         };
     },
     methods: {
@@ -119,6 +132,8 @@ export default {
             }
         },
         async buscarPrestamos() {
+            this.filtro = "Fecha";
+            this.filtroText = "";
                     let data = [];
                     data = await buscarPrestamosFachada();
                     if (data.length != 0) {
@@ -133,6 +148,20 @@ export default {
                         }
                     }
                 },
+        async buscarPrestamosFiltro() {
+            let data = [];
+            if (this.filtro == "Fecha") {
+                data = await buscarPorFechaPrestamoFachada(this.filtroText + "T00:00");
+            } else if (this.filtro == "Devolución") {
+                let dev = this.filtroText == "Si" ? true : false;
+                data = await buscarPrestamosDevueltosFachada(dev);
+            }
+            if (data.length != 0)
+                this.prestamos = data;
+            else {
+                alert("El filtro aplicado no posee préstamos.")
+            }
+        },
         async buscarDocente(cedula) {
                     const data = await buscarPorCedulaDocenteFachada(cedula);
                     this.nombreDocentes[data.cedula] = data.nombre;
@@ -204,6 +233,11 @@ export default {
                 this.consultarAdmin();
                 this.buscarPrestamos();
             },
+    watch: {
+        filtro() {
+            this.filtroText = "";
+        },
+    },
             props: {
                 filtrar: {
                     type: Boolean,
@@ -227,11 +261,20 @@ export default {
 }
 
 .tabla {
-    margin-left: 2%;
-    width: 96%;
+    margin-inline: 2%;
+    width: 100%;
 }
 
-
+.filtros {
+    margin-inline: 20%;
+    margin-bottom: 2%;
+    width: 60%;
+    border: 1px solid;
+    padding: 25px 50px;
+    background-color: #B4B8AB;
+    position: absolute;
+    top: 100px;
+}
 .info {
     max-height: 70vh;
     overflow-y: auto;

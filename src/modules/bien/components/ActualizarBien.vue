@@ -4,12 +4,13 @@
             <div class="formulario">
                 <h1>Actualizar Bien</h1>
                 <div class="form-floating">
-                    <input id="codInput" type="text" v-model="codigo" 
-                    class="form-control" placeholder="XXXXXXXXXX" :disabled="admin">
+                    <input id="codInput" type="text" v-model="codigo" class="form-control" placeholder="XXXXXXXXXX"
+                        :disabled="admin">
                     <label for="codInput">Código</label>
                 </div>
                 <div class="form-floating">
-                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX">
+                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+                        @input="mayusculas">
                     <label for="nomInput">Nombre</label>
                 </div>
                 <div class="form-floating">
@@ -187,6 +188,9 @@ export default {
             const user = sessionStorage.getItem("user");
             const data = await buscarPorCedulaPrestadorFachada(user);
             this.admin=!data.administrador;
+        },
+        mayusculas(event) {
+            event.target.value = event.target.value.toUpperCase();
         }
     }
 };

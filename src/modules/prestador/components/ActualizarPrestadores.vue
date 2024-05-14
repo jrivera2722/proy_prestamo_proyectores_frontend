@@ -9,7 +9,8 @@
           <label for="cedInput">Cédula</label>
         </div>
         <div class="form-floating">
-          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX" />
+          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+            @input="mayusculas" />
           <label for="nomInput">Nombre</label>
         </div>
         <div class="btn-group" style="margin-top: 1%;">
@@ -127,7 +128,10 @@ export default {
       const user = sessionStorage.getItem("user");
       const data = await buscarPorCedulaPrestadorFachada(user);
       this.admin=!data.administrador;
-    }
+    },
+    mayusculas(event) {
+      event.target.value = event.target.value.toUpperCase();
+    },
   },
 };
 </script>

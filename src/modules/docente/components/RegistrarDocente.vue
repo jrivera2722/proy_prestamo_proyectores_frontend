@@ -4,17 +4,17 @@
       <div class="formulario">
         <h1>Registro de Docentes</h1>
         <div class="form-floating">
-          <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX">
+          <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput"
+            placeholder="XXXXXXXXXX">
           <label for="cedInput">Cédula</label>
         </div>
         <div class="form-floating">
-          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"/>
+          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+            @input="mayusculas" />
           <label for="nomInput">Nombre</label>
         </div>
         <div>
-          <button class="btn btn-outline-secondary" 
-          @click="registrarDocente" 
-          style="margin-bottom: 1%">Guardar</button>
+          <button class="btn btn-outline-secondary" @click="registrarDocente" style="margin-bottom: 1%">Guardar</button>
         </div>
       </div>
     </div>
@@ -73,6 +73,9 @@ export default {
     },
     restrictInput(event) {
       event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    },
+    mayusculas(event) {
+      event.target.value = event.target.value.toUpperCase();
     }
   }
 }

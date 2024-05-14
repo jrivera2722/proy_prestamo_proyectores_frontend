@@ -2,7 +2,7 @@
   <div class="contenedor-externo">
     <div class="contenedor">
       <h1>
-        Bienvenido, {{ nombreUsuario }} <br />
+        Bienvenido/a, {{ nombreUsuario }} <br />
         al Sistema de Prestamo de Proyectores
       </h1>
     </div>
@@ -47,7 +47,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #1d3557;
+  background-color: #6999db;
   color: white;
   text-align: center;
 }

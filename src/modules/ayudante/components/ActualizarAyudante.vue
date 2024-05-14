@@ -9,7 +9,8 @@
                     <label for="cedInput">Cédula</label>
                 </div>
                 <div class="form-floating">
-                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX" />
+                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+                        @input="mayusculas" />
                     <label for="nomInput">Nombre</label>
                 </div>
                 <div class="form-floating">
@@ -109,7 +110,7 @@ export default {
         async consultarAdmin() {
             const user = sessionStorage.getItem("user");
             const data = await buscarPorCedulaPrestadorFachada(user);
-            this.admin=!data.administrador;
+            this.admin = !data.administrador;
         }
     },
 };

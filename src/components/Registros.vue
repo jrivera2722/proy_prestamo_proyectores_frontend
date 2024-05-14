@@ -5,7 +5,7 @@
         class="btn-group"
         role="group"
         aria-label="Basic checkbox toggle button group"
-        style="margin-top: 2.5%"
+        style="margin-top: 2.5%; margin-bottom: 1%"
       >
         <input
           class="btn-check"
@@ -14,7 +14,7 @@
           v-model="registroAyudante"
           @click="toggleCheckboxes(1)"
         />
-        <label class="btn btn-outline-primary" for="inpAyudante"
+        <label class="btn btn-outline-dark" for="inpAyudante"
           >Ayudante</label
         >
 
@@ -25,7 +25,7 @@
           v-model="registroDocente"
           @click="toggleCheckboxes(2)"
         />
-        <label class="btn btn-outline-primary" for="inpDocente">Docente</label>
+        <label class="btn btn-outline-dark" for="inpDocente">Docente</label>
 
         <input
           class="btn-check"
@@ -34,7 +34,7 @@
           v-model="registroPrestador"
           @click="toggleCheckboxes(3)"
         />
-        <label class="btn btn-outline-primary" for="inpPrestador"
+        <label class="btn btn-outline-dark" for="inpPrestador"
           >Prestador</label
         >
 
@@ -46,7 +46,7 @@
           @click="toggleCheckboxes(5)"
           disabled
         />
-        <label class="btn btn-outline-primary" for="inpBien" >Bien</label>
+        <label class="btn btn-outline-dark" for="inpBien" >Bien</label>
 
         <input
           class="btn-check"
@@ -55,7 +55,7 @@
           v-model="registroCartaCompromiso"
           @click="toggleCheckboxes(4)"
         />
-        <label class="btn btn-outline-primary" for="inpCartaCompromiso"
+        <label class="btn btn-outline-dark" for="inpCartaCompromiso"
           >Carta de Compromiso</label
         >
 
@@ -66,7 +66,7 @@
           v-model="registroPrestamo"
           @click="toggleCheckboxes(6)"
         />
-        <label class="btn btn-outline-primary" for="inpPrestamo"
+        <label class="btn btn-outline-dark" for="inpPrestamo"
           >Prestamo</label
         >
       </div>

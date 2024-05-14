@@ -409,6 +409,7 @@ export default {
     watch: {
         async cedulaSolicitud() {
             const val = parseInt(this.cedulaSolicitud);
+            console.log(this.cedulaSolicitud)
             if (this.cedulaSolicitud.length > 15) {
                 this.verificarAyudante(this.cedulaSolicitud);
             }else if (this.cedulaSolicitud.length >= 4 && isNaN(val)) {

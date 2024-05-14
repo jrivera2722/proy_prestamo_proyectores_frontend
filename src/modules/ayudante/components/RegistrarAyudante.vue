@@ -1,25 +1,26 @@
 <template>
   <div class="container">
-      <div class="formulario">
-        <h1>Registro de Ayudantes</h1>
-        <div class="form-floating">
-          <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX"/>
-          <label for="cedInput">Cédula</label>
-        </div>
-        <div class="form-floating">
-          <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"/>
-          <label for="nomInput">Nombre</label>
-        </div>
-        <div class="form-floating">
-          <input id="numInput" type="text" v-model="telefono" class="form-control" maxlength="10" @input="restrictInput" placeholder="XXXXXXXXXX"/>
-          <label for="numInput">Teléfono</label>
-        </div>
-        <div>
-          <button class="btn btn-outline-secondary" 
-          @click="registrarAyudante"
-          style="margin-bottom: 1%">Guardar</button>
-        </div>
+    <div class="formulario">
+      <h1>Registro de Ayudantes</h1>
+      <div class="form-floating">
+        <input id="cedInput" type="text" v-model="cedula" class="form-control" maxlength="10" @input="restrictInput"
+          placeholder="XXXXXXXXXX" />
+        <label for="cedInput">Cédula</label>
       </div>
+      <div class="form-floating">
+        <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+          @input="mayusculas" />
+        <label for="nomInput">Nombre</label>
+      </div>
+      <div class="form-floating">
+        <input id="numInput" type="text" v-model="telefono" class="form-control" maxlength="10" @input="restrictInput"
+          placeholder="XXXXXXXXXX" />
+        <label for="numInput">Teléfono</label>
+      </div>
+      <div>
+        <button class="btn btn-outline-secondary" @click="registrarAyudante" style="margin-bottom: 1%">Guardar</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -79,6 +80,9 @@ export default {
     },
     restrictInput(event) {
       event.target.value = event.target.value.replace(/[^0-9]/g, '');
+    },
+    mayusculas(event) {
+      event.target.value = event.target.value.toUpperCase();
     }
   }
 };

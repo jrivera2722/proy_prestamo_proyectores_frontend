@@ -8,7 +8,8 @@
                     <label for="codInput">Código</label>
                 </div>
                 <div class="form-floating">
-                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX">
+                    <input id="nomInput" type="text" v-model="nombre" class="form-control" placeholder="XXXXXXXXXX"
+                        @input="mayusculas">
                     <label for="nomInput">Nombre</label>
                 </div>
                 <div class="form-floating">
@@ -135,6 +136,9 @@ export default {
                         return;
                 }
             }
+        },
+        mayusculas(event) {
+            event.target.value = event.target.value.toUpperCase();
         }
     }
 }

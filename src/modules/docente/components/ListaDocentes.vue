@@ -65,8 +65,8 @@ export default {
 }
 
 .tabla {
-    margin-left: 2%;
-    width: 96%;
+    margin-inline: 2%;
+    width: 100%;
 }
 
 caption {

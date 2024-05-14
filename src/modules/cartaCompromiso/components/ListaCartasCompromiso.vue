@@ -5,40 +5,42 @@
                 <caption>Lista de Cartas de Compromiso</caption>
                 <div class="info">
                     <thead>
-                    <tr class="table-dark">
-                        <th v-if="!filtrar">N.Carta</th>
-                        <th>Asignatura</th>
-                        <th>Semestre</th>
-                        <th>Paralelo</th>
-                        <th>Día</th>
-                        <th>Hora del Préstamo</th>
-                        <th>Día de Devolución</th>
-                        <th>Hora de Devolución</th>
-                        <th>Docente</th>
-                        <th>Ayudante</th>
-                        <th>Autorizado</th>
-                        <th v-if="editar" scope="col">Acción</th>
-                        <th v-if="filtrar">Seleccionar</th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider">
-                    <tr v-for="carta in cartas" :key="carta.id" :class="claseFila(carta.autorizacion, carta.id)">
-                        <td v-if="!filtrar">{{ carta.id }}</td>
-                        <td>{{ carta.asignatura }}</td>
-                        <td>{{ carta.semestre }}</td>
-                        <td>{{ carta.paralelo }}</td>
-                        <td>{{ carta.dia }}</td>
-                        <td>{{ carta.horaPrestamo }}</td>
-                        <td>{{ carta.diaDevolucion }}</td>
-                        <td>{{ carta.horaDevolucion }}</td>
-                        <td>{{ nombreDocentes[carta.cedulaDocente] }}</td>
-                        <td>{{ nombreAyudantes[carta.cedulaAyudante] }}</td>
-                        <td v-if="carta.autorizacion">Sí</td>
-                        <td v-else>No</td>
-                        <td v-if="editar"><button class="btn btn-dark" @click="redirigirActualizarBien(carta.id)">Editar</button></td>
-                        <td v-if="filtrar"><button class="btn btn-dark" @click="enviarIdCarta(carta.id)">Seleccionar</button></td>
-                    </tr>
-                </tbody>
+                        <tr class="table-dark">
+                            <th style="width: 5%;" v-if="!filtrar">N.Carta</th>
+                            <th style="width: 5%;">Asignatura</th>
+                            <th style="width: 5%;">Semestre</th>
+                            <th style="width: 5%;">Paralelo</th>
+                            <th style="width: 5%;">Día</th>
+                            <th style="width: 5%;">Hora del Préstamo</th>
+                            <th style="width: 5%;">Día de Devolución</th>
+                            <th style="width: 5%;">Hora de Devolución</th>
+                            <th style="width: 5%;">Docente</th>
+                            <th style="width: 5%;">Ayudante</th>
+                            <th style="width: 5%;">Autorizado</th>
+                            <th style="width: 5%;" v-if="editar" scope="col">Acción</th>
+                            <th style="width: 5%;" v-if="filtrar">Seleccionar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr v-for="carta in cartas" :key="carta.id" :class="claseFila(carta.autorizacion, carta.id)">
+                            <td v-if="!filtrar">{{ carta.id }}</td>
+                            <td>{{ carta.asignatura }}</td>
+                            <td>{{ carta.semestre }}</td>
+                            <td>{{ carta.paralelo }}</td>
+                            <td>{{ carta.dia }}</td>
+                            <td>{{ carta.horaPrestamo }}</td>
+                            <td>{{ carta.diaDevolucion }}</td>
+                            <td>{{ carta.horaDevolucion }}</td>
+                            <td>{{ nombreDocentes[carta.cedulaDocente] }}</td>
+                            <td>{{ nombreAyudantes[carta.cedulaAyudante] }}</td>
+                            <td v-if="carta.autorizacion">Sí</td>
+                            <td v-else>No</td>
+                            <td v-if="editar"><button class="btn btn-dark"
+                                    @click="redirigirActualizarBien(carta.id)">Editar</button></td>
+                            <td v-if="filtrar"><button class="btn btn-dark"
+                                    @click="enviarIdCarta(carta.id)">Seleccionar</button></td>
+                        </tr>
+                    </tbody>
                 </div>
             </table>
             <div v-else>
@@ -162,8 +164,10 @@ export default {
 }
 
 .tabla {
-    margin: 1.5%;
-    width: fit-content;
+    /*margin: 1.5%;
+    width: fit-content;*/
+    margin-inline: 2%;
+    width: 100%;
 }
 
 caption {
