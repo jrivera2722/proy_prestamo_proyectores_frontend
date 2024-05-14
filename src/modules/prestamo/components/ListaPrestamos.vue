@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <div class="tabla">
+        <div class="tabla" style="margin-top: 70px;">
             <table class="table table-hover caption-top" v-if="prestamos.length > 0">
                 <caption>Lista de Préstamos</caption>
                 <div class="info">
@@ -261,7 +261,6 @@ export default {
 }
 
 .tabla {
-    margin-inline: 2%;
     width: 100%;
 }
 

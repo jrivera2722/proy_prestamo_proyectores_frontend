@@ -12,16 +12,18 @@
 
                     <input class="btn-check" id="btnPrestAyu" type="checkbox" v-model="prestamoAyudante"
                         @click="toggleCheckboxes(2)" />
-                    <label class="btn btn-outline-secondary" for="btnPrestAyu" style="background: white">Ayudante</label>
+                    <label class="btn btn-outline-secondary" for="btnPrestAyu"
+                        style="background: white">Ayudante</label>
                 </div>
-                <div v-if="opcSeleccionado.nombre!=null && opcSeleccionado.cedula!=null">
+                <div v-if="opcSeleccionado.nombre != null && opcSeleccionado.cedula != null">
                     <h5>Realizar un préstamo: {{ opcSeleccionado.nombre }} C.I: {{ opcSeleccionado.cedula }}</h5>
                 </div>
                 <div v-if="prestamoAyudante">
-                    <v-select id="asiInput" v-model="cedulaSolicitud" @search="valorDado" class="form-control" :options="listaAyudantes"
-                            @input="printSelectedValue" placeholder="Nombre o número de cédula del ayudante"></v-select>
+                    <v-select id="asiInput" v-model="cedulaSolicitud" @search="valorDado" class="form-control"
+                        :options="listaAyudantes" @input="mayusculas"
+                        placeholder="Nombre o número de cédula del ayudante"></v-select>
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="filtroCarta"
-                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada" style="height: 100%;"/>
+                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada" />
                     <div v-else>
                         <h3 v-if="listaAyudantes.length == 10">
                             No existe ayudantes que conicidan con la busqueda.
@@ -29,10 +31,12 @@
                     </div>
                 </div>
                 <div v-if="prestamoDocente">
-                    <v-select id="asiInput" v-model="cedulaSolicitudDocente" @search="valorDadoDocente" class="form-control" :options="listaDocentes"
-                            @input="printSelectedValue" placeholder="Nombre o número de cédula del docente"></v-select>
+                    <v-select id="asiInput" v-model="cedulaSolicitudDocente" @search="valorDadoDocente"
+                        class="form-control" :options="listaDocentes" @input="mayusculas"
+                        placeholder="Nombre o número de cédula del docente"></v-select>
                 </div>
-                <div v-if="cedulaRegistrada || prestamoDocente" class="btn-group" role="group" aria-label="Basic checkbox toggle button group"
+                <div v-if="cedulaRegistrada || prestamoDocente" class="btn-group" role="group"
+                    aria-label="Basic checkbox toggle button group"
                     style="margin-top: 15px; margin-bottom: 15px; margin-left: -15%; margin-right: -15%">
                     <input class="btn-check" id="btnProyector" type="checkbox" v-model="buscarProyectores" />
                     <label class="btn btn-outline-secondary" for="btnProyector">Proyector</label>
@@ -123,7 +127,7 @@
                     <label for="inpCortapicos">Escoja el cortapicos: </label>
                 </div>
 
-                <div v-if="seguro">
+                <div v-if="bienesPrestables()">
                     <button class="btn btn-outline-secondary" @click="realizarPrestamo" style="margin-bottom: 1%">
                         Realizar prestamo
                     </button>
@@ -184,8 +188,8 @@ export default {
             filtroCarta: "",
             listaAyudantes: [],
             listaDocentes: [],
-            docenteSeleccionado:"",
-            opcSeleccionado:{
+            docenteSeleccionado: "",
+            opcSeleccionado: {
                 nombre: null,
                 cedula: null
             }
@@ -193,10 +197,12 @@ export default {
     },
     methods: {
         valorDado(searchText) {
+            searchText = searchText.toUpperCase();
             this.cedulaSolicitud = searchText;
         },
-        
+
         valorDadoDocente(searchText) {
+            searchText = searchText.toUpperCase();
             this.cedulaSolicitudDocente = searchText;
         },
         recibirIdCarta(idCarta) {
@@ -212,8 +218,8 @@ export default {
             const numeroCedula = partes[1];
             try {
                 const data = await buscarPorCedulaAyudanteFachada(numeroCedula);
-                this.opcSeleccionado.nombre=data.nombre;
-                this.opcSeleccionado.cedula=data.cedula;
+                this.opcSeleccionado.nombre = data.nombre;
+                this.opcSeleccionado.cedula = data.cedula;
                 this.filtroCarta = data.cedula;
                 console.log(this.filtroCarta);
                 this.cedulaRegistrada = true;
@@ -227,8 +233,8 @@ export default {
             try {
                 const data = await buscarPorCedulaDocenteFachada(numeroCedula);
                 this.docenteSeleccionado = data.cedula;
-                this.opcSeleccionado.nombre=data.nombre;
-                this.opcSeleccionado.cedula=data.cedula;
+                this.opcSeleccionado.nombre = data.nombre;
+                this.opcSeleccionado.cedula = data.cedula;
             } catch {
                 alert("No existe el docente.")
             }
@@ -238,7 +244,7 @@ export default {
                 const lista = [];
                 const data = await buscarPorNombreAyudanteFachada(this.cedulaSolicitud);
                 data.forEach((item) => {
-                    lista.push(item.nombre+"/"+item.cedula);
+                    lista.push(item.nombre + "/" + item.cedula);
                 });
                 this.listaAyudantes = lista;
             } catch {
@@ -249,7 +255,7 @@ export default {
             try {
                 const lista = [];
                 const data = await buscarPorCedulaAyudanteFachada(this.cedulaSolicitud);
-                lista.push(data.nombre+"/"+data.cedula);
+                lista.push(data.nombre + "/" + data.cedula);
                 this.listaAyudantes = lista;
             } catch {
                 alert("Se dio un problema al buscar ayudantes");
@@ -260,7 +266,7 @@ export default {
                 const lista = [];
                 const data = await buscarPorNombreDocenteFachada(this.cedulaSolicitudDocente);
                 data.forEach((item) => {
-                    lista.push(item.nombre+"/"+item.cedula);
+                    lista.push(item.nombre + "/" + item.cedula);
                 });
                 this.listaDocentes = lista;
             } catch {
@@ -271,7 +277,7 @@ export default {
             try {
                 const lista = [];
                 const data = await buscarPorCedulaDocenteFachada(this.cedulaSolicitudDocente);
-                lista.push(data.nombre+"/"+data.cedula);
+                lista.push(data.nombre + "/" + data.cedula);
                 this.listaDocentes = lista;
             } catch {
                 alert("Se dio un problema al buscar docentes");
@@ -383,6 +389,8 @@ export default {
             this.extension = "";
             this.cortapico = "";
             this.codigoBienes = [];
+            this.opcSeleccionado.nombre = null;
+            this.opcSeleccionado.cedula = null;
         },
         toggleCheckboxes(opcion) {
             switch (opcion) {
@@ -391,40 +399,114 @@ export default {
                     this.prestamoAyudante = false;
                     this.cedulaSolicitud = "";
                     this.cedulaSolicitudDocente = "";
-                    this.listaAyudantes=[];
-                    this.listaDocentes=[];
+                    this.listaAyudantes = [];
+                    this.listaDocentes = [];
                     this.cedulaRegistrada = false;
+                    this.opcSeleccionado.nombre = null;
+                    this.opcSeleccionado.cedula = null;
+                    this.cedulaSolicitud = "";
+                    this.cedulaSolicitudDocente = "";
+                    this.cedulaRegistrada = false;
+                    this.idCartaCompromiso = 0;
+                    this.proyectores = [];
+                    this.cablesPoder = [];
+                    this.cablesHDMI = [];
+                    this.adaptadores = [];
+                    this.parlantes = [];
+                    this.cablesVGA = [];
+                    this.extensiones = [];
+                    this.cortapicos = [];
+                    this.buscarProyectores = false;
+                    this.buscarCablesPoder = false;
+                    this.buscarcablesHDMI = false;
+                    this.buscarAdaptador = false;
+                    this.buscarParlantes = false;
+                    this.buscarCablesVGA = false;
+                    this.buscarExtensiones = false;
+                    this.buscarCortapicos = false;
+                    this.proyector = "";
+                    this.cablePoder = "";
+                    this.cableHDMI = "";
+                    this.adaptador = "";
+                    this.parlante = "";
+                    this.cableVGA = "";
+                    this.extension = "";
+                    this.cortapico = "";
+                    this.codigoBienes = [];
+                    this.opcSeleccionado.nombre = null;
+                    this.opcSeleccionado.cedula = null;
                     break;
                 case 2:
                     this.prestamoDocente = false;
                     this.prestamoAyudante = true;
                     this.cedulaSolicitud = "";
                     this.cedulaSolicitudDocente = "";
-                    this.listaAyudantes=[];
-                    this.listaDocentes=[];
+                    this.listaAyudantes = [];
+                    this.listaDocentes = [];
+                    this.opcSeleccionado.nombre = null;
+                    this.opcSeleccionado.cedula = null;
+                    this.cedulaSolicitud = "";
+                    this.cedulaSolicitudDocente = "";
+                    this.cedulaRegistrada = false;
+                    this.idCartaCompromiso = 0;
+                    this.proyectores = [];
+                    this.cablesPoder = [];
+                    this.cablesHDMI = [];
+                    this.adaptadores = [];
+                    this.parlantes = [];
+                    this.cablesVGA = [];
+                    this.extensiones = [];
+                    this.cortapicos = [];
+                    this.buscarProyectores = false;
+                    this.buscarCablesPoder = false;
+                    this.buscarcablesHDMI = false;
+                    this.buscarAdaptador = false;
+                    this.buscarParlantes = false;
+                    this.buscarCablesVGA = false;
+                    this.buscarExtensiones = false;
+                    this.buscarCortapicos = false;
+                    this.proyector = "";
+                    this.cablePoder = "";
+                    this.cableHDMI = "";
+                    this.adaptador = "";
+                    this.parlante = "";
+                    this.cableVGA = "";
+                    this.extension = "";
+                    this.cortapico = "";
+                    this.codigoBienes = [];
+                    this.opcSeleccionado.nombre = null;
+                    this.opcSeleccionado.cedula = null;
                     break;
             }
         },
+        bienesPrestables() {
+            console.log((this.proyector == "" || this.cablePoder == ""
+                || this.cableHDMI == "" || this.adaptador == "" || this.parlante == ""
+                || this.cableVGA == "" || this.extension == "" || this.cortapico == "") ? false : true);
+            return (this.proyector != "" || this.cablePoder != ""
+                || this.cableHDMI != "" || this.adaptador != "" || this.parlante != ""
+                || this.cableVGA != "" || this.extension != "" || this.cortapico != "") ? true : false;
+        }
     },
     watch: {
         async cedulaSolicitud() {
             const val = parseInt(this.cedulaSolicitud);
             console.log(this.cedulaSolicitud)
-            if (this.cedulaSolicitud.length > 15) {
+            if (this.cedulaSolicitud.length > 12) {
                 this.verificarAyudante(this.cedulaSolicitud);
-            }else if (this.cedulaSolicitud.length >= 4 && isNaN(val)) {
+            } else if (this.cedulaSolicitud.length >= 4 && isNaN(val)) {
                 this.buscarAyudantesNombres();
-            }else if(this.cedulaSolicitud.length == 10 && !isNaN(val)){
+            } else if (this.cedulaSolicitud.length == 10 && !isNaN(val)) {
                 this.buscarAyudantesCedula();
             }
         },
         async cedulaSolicitudDocente() {
             const val = parseInt(this.cedulaSolicitudDocente);
-            if (this.cedulaSolicitudDocente.length > 15) {
+            if (this.cedulaSolicitudDocente.length > 12) {
                 this.verificarDocente(this.cedulaSolicitudDocente);
-            }else if (this.cedulaSolicitudDocente.length >= 4 && isNaN(val)) {
+            } else if (this.cedulaSolicitudDocente.length >= 4 && isNaN(val)) {
                 this.buscarDocentesNombres();
-            }else if(this.cedulaSolicitudDocente.length == 10 && !isNaN(val)){
+            } else if (this.cedulaSolicitudDocente.length == 10 && !isNaN(val)) {
                 this.buscarDocentesCedula();
             }
         },
@@ -522,9 +604,13 @@ export default {
 
 
 <style scoped>
-.lista-centrada{
-    margin-left: -30%;
+.lista-centrada {
+    margin-left: -15vh;
+    margin-right: -15%;
+    background-color: white;
+    height: 100%;
 }
+
 .contenedor {
     align-items: center;
     justify-content: center;

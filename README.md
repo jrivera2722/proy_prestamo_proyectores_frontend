@@ -24,6 +24,8 @@ npm run test:unit
 npm install vue-select@beta
 ## instalar jspdf
 npm install jspdf-autotable
+## instalr xlsx
+npm install xlsx
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

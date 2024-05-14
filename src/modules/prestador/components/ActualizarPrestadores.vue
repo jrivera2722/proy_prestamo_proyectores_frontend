@@ -129,8 +129,8 @@ export default {
       const data = await buscarPorCedulaPrestadorFachada(user);
       this.admin=!data.administrador;
     },
-    mayusculas(event) {
-      event.target.value = event.target.value.toUpperCase();
+    mayusculas() {
+      this.nombre = this.nombre.toUpperCase();
     },
   },
 };

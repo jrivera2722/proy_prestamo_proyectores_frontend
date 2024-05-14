@@ -65,7 +65,7 @@ export default {
     },
     verificarCampos() {
       try {
-        if (this.cedula.length === 10 && this.nombre.trim() != "" && this.telefono.trim() !="") {
+        if (this.cedula.length === 10 && this.nombre.trim() != "" && this.telefono.length ==10) {
           return true;
         }
         return false;
@@ -81,8 +81,8 @@ export default {
     restrictInput(event) {
       event.target.value = event.target.value.replace(/[^0-9]/g, '');
     },
-    mayusculas(event) {
-      event.target.value = event.target.value.toUpperCase();
+    mayusculas() {
+      this.nombre = this.nombre.toUpperCase();
     }
   }
 };

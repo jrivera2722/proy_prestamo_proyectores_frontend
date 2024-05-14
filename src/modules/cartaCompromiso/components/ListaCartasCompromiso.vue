@@ -3,6 +3,17 @@
         <div class="tabla">
             <table class="table table-hover caption-top" v-if="cartas.length > 0">
                 <caption>Lista de Cartas de Compromiso</caption>
+                <div class="center-content">
+
+                    <button class="descarga" v-if="cartas.length >= 1 && !filtrar" @click="mostrar">
+                        <img src="@/assets/download.png" alt="Descargar" />
+                    </button>
+
+                    <div v-if="mostrarOpciones" class="opciones">
+                        <button class="btn btn-success" @click="descargarExcel2">Excel</button>
+                        <button class="btn btn-danger" @click="descargarPDF">PDF</button>
+                    </div>
+                </div>
                 <div class="info">
                     <thead>
                         <tr class="table-dark">
@@ -35,8 +46,11 @@
                             <td>{{ nombreAyudantes[carta.cedulaAyudante] }}</td>
                             <td v-if="carta.autorizacion">Sí</td>
                             <td v-else>No</td>
-                            <td v-if="editar"><button class="btn btn-dark"
-                                    @click="redirigirActualizarBien(carta.id)">Editar</button></td>
+                            <td v-if="editar" class="casilla-btns"><button class="btn btn-dark"
+                                    @click="redirigirActualizarBien(carta.id)">Editar</button>
+                                <button class="btn btn-dark"
+                                    @click="actualizarAutorizacion(carta.id)">Autorizar</button>
+                            </td>
                             <td v-if="filtrar"><button class="btn btn-dark"
                                     @click="enviarIdCarta(carta.id)">Seleccionar</button></td>
                         </tr>
@@ -54,9 +68,14 @@
 </template>
 
 <script>
+import * as xlsx from "xlsx";
+
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
 import router from "@/router/router";
 import { buscarPorCedulaAyudanteFachada, buscarCartasCompromisoXDiaAyudanteFachada } from '@/modules/ayudante/helpers/AyudanteCliente';
-import { buscarTodosCartasCompromisoFachada } from '../helpers/CartaCompromisoCliente';
+import { buscarTodosCartasCompromisoFachada, actualizarCartaCompromisoFachada, buscarPorIdCartaCompromisoFachada } from '../helpers/CartaCompromisoCliente';
 import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/DocenteCliente';
 
 export default {
@@ -66,7 +85,8 @@ export default {
             nombreAyudantes: [],
             nombreDocentes: [],
             cartaSeleccionada: null,
-            editar: true
+            editar: true,
+            mostrarOpciones: false,
         };
     },
     methods: {
@@ -121,13 +141,171 @@ export default {
                     'fila-seleccionada': id === this.cartaSeleccionada,
                     'table-info': autorizacion === true
                 };
-            } else if(!this.filtrar) {
+            } else if (!this.filtrar) {
                 return {
                     'table-info': autorizacion === true,
                     'table-danger': autorizacion === false
                 };
             }
-        }
+        },
+        async actualizarAutorizacion(id) {
+            console.log("funcion" + id);
+            const log = sessionStorage.getItem("user");
+            try {
+                const cartaAutorizar = await buscarPorIdCartaCompromisoFachada(id);
+                cartaAutorizar.autorizacion = cartaAutorizar.autorizacion === true ? false : true;
+                const registro = await actualizarCartaCompromisoFachada(cartaAutorizar, id);
+                if (registro) {
+                    this.buscarCartas();
+                }
+            } catch (error) {
+                alert("No se puede devolver el prestamo ", id);
+            }
+        },
+        mostrar() {
+            this.mostrarOpciones = true;
+        },
+        ocultar() {
+            this.mostrarOpciones = false;
+        },
+        descargarPDF() {
+            // Crear un nuevo objeto jsPDF
+            const doc = new jsPDF({
+                orientation: "landscape"
+            });
+
+            const columns = ["No. Carta", "Asignatura",
+                "Semestre", "Paralelo", "Día",
+                "Hora prestamo", "Día devolución",
+                "Hora devolución", "Autorización", "C. Docente", "C. Ayudante"]
+
+            const data = this.cartas.map(carta => [
+                carta.id,
+                carta.asignatura,
+                carta.semestre,
+                carta.paralelo,
+                carta.dia,
+                carta.horaPrestamo,
+                carta.diaDevolucion,
+                carta.horaDevolucion,
+                carta.autorizacion,
+                carta.cedulaDocente,
+                carta.cedulaAyudante,
+            ]);
+
+            // Añadir la tabla
+            doc.autoTable({
+                head: [columns],
+                body: data,
+                startY: 10,
+                align: 'center',
+                //width: 'auto', // O ajusta según sea necesario
+                theme: 'striped', // Ajusta la alineación del texto
+            });
+
+            //doc.addPage();
+
+            // Configurar el formato y la orientación del PDF
+            const textoReglamento1 =
+                "De conformidad con lo que determinan los artículos 8 y 41 del Reglamento General para la Administración, Utilización, Manejo y Control de los Bienes y Existencias del Sector Público, entregan para su uso y custodia los bienes que se describen y se detallan en este documento.";
+            const textoReglamento2 =
+                "\nDeclaro que he recibido los bienes institucionales que se me ha asignado, por lo que me comprometo a su custodia, conservación y devolución de los bienes detallados.";
+
+            const maxWidth = doc.internal.pageSize.width + 70;
+
+            // Dividir el texto en líneas
+            const textLines = doc.splitTextToSize(textoReglamento1 + textoReglamento2, maxWidth);
+
+            let x = 14;
+            let y = doc.autoTable.previous.finalY + 10;
+
+            // Agregar cada línea al PDF
+            doc.setFontSize(11);
+            textLines.forEach(line => {
+                doc.text(line, x, y);
+                y += 7; // Puedes ajustar el espacio entre líneas según tus necesidades
+            });
+
+            const firma = "__________________________"
+            const rec = "Custodio - Recibe";
+            const ent = "Custodio - Entrega";
+
+            doc.text(firma, 42, y + 15);
+            doc.text(firma, 194, y + 15);
+
+            doc.text(rec, 54, y + 20);
+            doc.text(ent, 204, y + 20);
+
+            // Descargar el PDF
+            doc.save('Cartas.pdf');
+
+            this.ocultar();
+        },
+        descargarExcel2() {
+            const data = this.cartas.map((carta) => ({
+                "No.Carta": carta.id,
+                "Asignatura": carta.asignatura,
+                "Semestre": carta.semestre,
+                "Paralelo": carta.paralelo,
+                "Día prestamo": carta.dia,
+                "Hora prestamo": carta.horaPrestamo,
+                "Día devolución": carta.diaDevolucion,
+                "Hora devolución": carta.horaDevolucion,
+                "Autorización": carta.autorizacion,
+                "C. Docente": carta.cedulaDocente,
+                "C. Ayudante": carta.cedulaAyudante,
+            }));
+
+            const ws = xlsx.utils.json_to_sheet(data);
+            ws["!cols"] = [
+                { wch: 10.5 },  // A
+                { wch: 18 },    // B
+                { wch: 22 },    // C
+                { wch: 18 },    // D
+                { wch: 10.5 },  // E
+                { wch: 10.5 },  // F
+                { wch: 12 },    // G
+                { wch: 15 },    // H
+                { wch: 40 },    // I
+            ];
+
+            var row = this.cartas.length + 2;
+
+            ws["!ref"] = `A1:M${row + 10}`;
+
+            const textoReglamento1 =
+                "De conformidad con lo que determinan los artículos 8 y 41 del Reglamento General para la Administración, Utilización, Manejo y Control de los Bienes y Existencias del Sector Público, entregan para su uso y custodia los bienes que se describen y se detallan en este documento.";
+            const textoReglamento2 =
+                "Declaro que he recibido los bienes institucionales que se me ha asignado, por lo que me comprometo a su custodia, conservación y devolución de los bienes detallados.";
+
+            xlsx.utils.sheet_add_aoa(ws, [[textoReglamento1]], {
+                origin: `A${row + 2}`,
+            });
+            xlsx.utils.sheet_add_aoa(ws, [[textoReglamento2]], {
+                origin: `A${row + 4}`,
+            });
+
+            //ws[`B${row + 6}`].s = { border: { bottom: { style: 'thin', color: { auto: 1 } } } };
+            xlsx.utils.sheet_add_aoa(ws, [["Custodio - Recibe"]], {
+                origin: `C${row + 7}`,
+            });
+            xlsx.utils.sheet_add_aoa(ws, [["Custodio - Entrega"]], {
+                origin: `K${row + 7}`,
+            });
+
+            if (this.filtro == "Responsable") {
+                xlsx.utils.sheet_add_aoa(ws, [[this.filtroText]], {
+                    origin: `C${row + 8}`,
+                });
+            }
+
+            const wb = xlsx.utils.book_new();
+            xlsx.utils.book_append_sheet(wb, ws, "Cartas");
+
+            xlsx.writeFile(wb, "cartas.xlsx");
+
+            this.ocultar();
+        },
     },
     mounted() {
         if (this.filtrar) {
@@ -150,7 +328,6 @@ export default {
 </script>
 
 <style scoped>
-
 .fila-seleccionada {
     background-color: aqua;
 }
@@ -177,14 +354,56 @@ caption {
 }
 
 .info {
-  max-height: 60vh;
-  overflow-y: auto;
+    max-height: 60vh;
+    overflow-y: auto;
 
-  align-items: center;
+    align-items: center;
 }
 
-td, th {
+td,
+th {
     text-align: center;
     vertical-align: middle;
+}
+
+.casilla-btns {
+    width: fit-content;
+}
+
+button {
+    margin: 0 5px 5px 0;
+}
+
+.center-content {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-content * {
+    margin: 10px;
+}
+
+img {
+    height: 28px;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.descarga {
+    margin-left: 20px;
+    border-radius: 20px;
+    background-color: white;
+    border: 2px outset #457b9d;
+    cursor: pointer;
+}
+
+.descarga:hover {
+    background-color: #caf0f8;
+    border: 2px inset #457b9d;
 }
 </style>

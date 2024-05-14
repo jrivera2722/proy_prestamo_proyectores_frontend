@@ -104,8 +104,8 @@ export default {
         restrictInput(event) {
             event.target.value = event.target.value.replace(/[^0-9]/g, '');
         },
-        mayusculas(event) {
-            event.target.value = event.target.value.toUpperCase();
+        mayusculas() {
+            this.nombre = this.nombre.toUpperCase();
         },
         async consultarAdmin() {
             const user = sessionStorage.getItem("user");

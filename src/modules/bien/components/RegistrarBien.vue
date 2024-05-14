@@ -137,8 +137,8 @@ export default {
                 }
             }
         },
-        mayusculas(event) {
-            event.target.value = event.target.value.toUpperCase();
+        mayusculas() {
+            this.nombre = this.nombre.toUpperCase();
         }
     }
 }

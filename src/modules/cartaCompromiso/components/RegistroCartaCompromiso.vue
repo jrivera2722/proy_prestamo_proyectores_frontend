@@ -331,8 +331,8 @@ export default {
 
             return new Date(fecha).toLocaleDateString("es-ES", options);
         },
-        mayusculas(event) {
-            event.target.value = event.target.value.toUpperCase();
+        mayusculas() {
+            this.asignatura = this.asignatura.toUpperCase();
         }
     },
     watch: {

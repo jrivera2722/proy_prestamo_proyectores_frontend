@@ -20,7 +20,7 @@
                         <label for="asiInput">Número de cédula del ayudante: </label>
                     </div>
                     <ListaCartasCompromiso v-if="cedulaRegistrada" :filtrar="true" :cedulaFiltro="cedulaSolicitud"
-                        @obtenerIdCarta="recibirIdCarta" style=" height: 100%" />
+                        @obtenerIdCarta="recibirIdCarta" class="lista-centrada" />
                     <div v-else>
                         <h3 v-if="cedulaSolicitud.length == 10">Parece que esa cédula no ha sido registrada.</h3>
                     </div>
@@ -395,6 +395,10 @@ export default {
             this.cortapico = "";
             this.codigoBienes = [];
         },
+        mayusculas() {
+            this.cedulaSolicitud = this.cedulaSolicitud.toUpperCase();
+            this.cedulaSolicitudDocente = this.cedulaSolicitudDocente.toUpperCase();
+        },
     },
     watch: {
         cedulaSolicitud() {
@@ -404,8 +408,13 @@ export default {
         },
         async buscarProyectores() {
             if (this.buscarProyectores && this.proyectores.length == 0) {
-                const data = await this.buscarBienes("P");
-                this.proyectores = data;
+                try {
+                    const data = await this.buscarBienes("P");
+                    this.proyectores = data;
+                } catch (error) {
+                    
+                }
+                
 
                 try {
                     const bien = await this.buscarBienTipo("P");
@@ -415,15 +424,19 @@ export default {
                 } catch { }
 
                 if (this.proyectores.length == 0) {
-                    alert("ERROR! No hay proyectores disponibles.");
+                    alert("No hay proyectores disponibles.");
                     this.buscarProyectores = false;
                 }
             }
         },
         async buscarCablesPoder() {
             if (this.buscarCablesPoder && this.cablesPoder.length == 0) {
-                const data = await this.buscarBienes("CP");
+                try{
+                    const data = await this.buscarBienes("CP");
                 this.cablesPoder = data;
+                }catch{
+
+                }
 
                 try {
                     const bien = await this.buscarBienTipo("CP");
@@ -433,7 +446,7 @@ export default {
                 } catch { }
 
                 if (this.cablesPoder.length == 0) {
-                    alert("ERROR! No hay cables de poder disponibles.");
+                    alert("No hay cables de poder disponibles.");
                     this.buscarCablesPoder = false;
                 }
             }
@@ -458,8 +471,12 @@ export default {
         },
         async buscarAdaptador() {
             if (this.buscarAdaptador && this.adaptadores.length == 0) {
-                const data = await this.buscarBienes("AD");
-                this.adaptadores = data;
+                try {
+                    const data = await this.buscarBienes("AD");
+                    this.adaptadores = data;
+                } catch (error) {
+                    
+                }
 
                 try {
                     const bien = await this.buscarBienTipo("AD");
@@ -469,15 +486,20 @@ export default {
                 } catch { }
 
                 if (this.adaptadores.length == 0) {
-                    alert("ERROR! No hay adaptadores disponibles.");
+                    alert("No hay adaptadores disponibles.");
                     this.buscarAdaptador = false;
                 }
             }
         },
         async buscarParlantes() {
             if (this.buscarParlantes && this.parlantes.length == 0) {
-                const data = await this.buscarBienes("PA");
-                this.parlantes = data;
+                try{
+                    const data = await this.buscarBienes("PA");
+                    this.parlantes = data;
+                }catch{
+                
+
+                }
 
                 try {
                     const bien = await this.buscarBienTipo("PA");
@@ -494,8 +516,12 @@ export default {
         },
         async buscarCablesVGA() {
             if (this.buscarCablesVGA && this.cablesVGA.length == 0) {
-                const data = await this.buscarBienes("V");
-                this.cablesVGA = data;
+                try {
+                    const data = await this.buscarBienes("V");
+                    this.cablesVGA = data;
+                } catch (error) {
+                    
+                }
 
                 try {
                     const bien = await this.buscarBienTipo("V");
@@ -512,8 +538,13 @@ export default {
         },
         async buscarExtensiones() {
             if (this.buscarExtensiones && this.extensiones.length == 0) {
-                const data = await this.buscarBienes("E");
-                this.extensiones = data;
+                try {
+                    const data = await this.buscarBienes("E");
+                    this.extensiones = data;
+                } catch (error) {
+                    
+                }
+                
 
                 try {
                     const bien = await this.buscarBienTipo("E");
@@ -530,8 +561,12 @@ export default {
         },
         async buscarCortapicos() {
             if (this.buscarCortapicos && this.cortapicos.length == 0) {
-                const data = await this.buscarBienes("C");
-                this.cortapicos = data;
+                try {
+                    const data = await this.buscarBienes("C");
+                    this.cortapicos = data;   
+                } catch (error) {
+                    
+                }
 
                 try {
                     const bien = await this.buscarBienTipo("C");
@@ -551,6 +586,14 @@ export default {
 </script>
 
 <style scoped>
+
+.lista-centrada {
+    margin-left: -15vh;
+    margin-right: -15%;
+    background-color: white;
+    height: 100%;
+}
+
 .contenedor {
     align-items: center;
     justify-content: center;
