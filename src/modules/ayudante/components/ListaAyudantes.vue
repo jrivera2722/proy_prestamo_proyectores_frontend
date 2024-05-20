@@ -63,6 +63,7 @@
         <caption>
           Lista de Ayudantes
         </caption>
+        <div class="info">
         <thead>
           <tr class="table-dark">
             <th scope="col">Cédula</th>
@@ -86,6 +87,7 @@
             </td>
           </tr>
         </tbody>
+    </div>
       </table>
       <div v-else>
         <h1>Buscando ayudantes...</h1>
@@ -191,5 +193,25 @@ td,
 th {
   text-align: center;
   vertical-align: middle;
+}
+
+.info {
+  max-height: 70vh;
+  overflow-y: auto; /*scroll*/
+}
+
+/*View this observality for changed in others pags web.*/
+.info th,
+.info td {
+  padding: 26px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 </style>

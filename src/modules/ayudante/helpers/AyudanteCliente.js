@@ -29,36 +29,36 @@ export const actualizarAyudanteFachada = async (bodyAyudante, cedula) => {
 }
 
 const guardarAyudante = async (bodyAyudante) => {
-    const data = axios.post(`http://localhost:8086/API/v1.0/Prestamos/ayudantes`, bodyAyudante).then(r => r.data);
+    const data = axios.post(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes`, bodyAyudante).then(r => r.data);
     return data;
 }
 
 const buscarPorCedulaAyudante = async (cedula) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/ayudantes/${cedula}`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes/${cedula}`).then(r => r.data);
     return data;
 }
 
 const buscarPorNombreAyudante = async (nombre) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/ayudantes/n/${nombre}`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes/n/${nombre}`).then(r => r.data);
     return data;
 }
 
 const buscarCartasCompromisoAyudante = async (cedula) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/ayudantes/${cedula}/cartasCompromiso`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes/${cedula}/cartasCompromiso`).then(r => r.data);
     return data;
 }
 
 const buscarCartasCompromisoXDiaAyudante = async (cedula) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/ayudantes/${cedula}/diaCartasCompromiso`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes/${cedula}/diaCartasCompromiso`).then(r => r.data);
     return data;
 }
 
 const buscarTodosAyudantes = async () => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/ayudantes`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes`).then(r => r.data);
     return data;
 }
 
 const actualizarAyudante = async (bodyAyudante, cedula) => {
-    const data = await axios.put(`http://localhost:8086/API/v1.0/Prestamos/ayudantes/${cedula}`, bodyAyudante).then(r => r.data);
+    const data = await axios.put(`http://10.3.2.44:8082/API/v1.0/Prestamos/ayudantes/${cedula}`, bodyAyudante).then(r => r.data);
     return data;
 }

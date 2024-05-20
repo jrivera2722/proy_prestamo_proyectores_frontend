@@ -25,31 +25,31 @@ export const actualizarDocenteFachada = async (bodyDocente, cedula) => {
 }
 
 const guardarDocente = async (bodyDocente) => {
-    const data = axios.post(`http://localhost:8086/API/v1.0/Prestamos/docentes`, bodyDocente).then(r => r.data);
+    const data = axios.post(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes`, bodyDocente).then(r => r.data);
     return data;
 }
 
 const buscarPorCedulaDocente = async (cedula) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/docentes/${cedula}`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes/${cedula}`).then(r => r.data);
     return data;
 }
 
 const buscarPorNombreDocente = async (nombre) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/docentes/n/${nombre}`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes/n/${nombre}`).then(r => r.data);
     return data;
 }
 
 const buscarCartasCompromisoDocente = async (cedula) => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/docentes/${cedula}/cartasCompromiso`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes/${cedula}/cartasCompromiso`).then(r => r.data);
     return data;
 }
 
 const buscarTodosDocentes = async () => {
-    const data = await axios.get(`http://localhost:8086/API/v1.0/Prestamos/docentes`).then(r => r.data);
+    const data = await axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes`).then(r => r.data);
     return data;
 }
 
 const actualizarDocente = async (bodyDocente, cedula) => {
-    const data = await axios.put(`http://localhost:8086/API/v1.0/Prestamos/docentes/${cedula}`, bodyDocente).then(r => r.data);
+    const data = await axios.put(`http://10.3.2.44:8082/API/v1.0/Prestamos/docentes/${cedula}`, bodyDocente).then(r => r.data);
     return data;
 }

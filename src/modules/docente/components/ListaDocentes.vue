@@ -1,9 +1,11 @@
 <template>
     <div class="contenedor">
+        <div></div>
         <div class="tabla">
-            <table class="table table-hover caption-top" v-if="docentes.length > 0">
+            <table class="table table-hover caption-top" v-if="docentes.length != 0">
                 <caption>Lista de Docentes</caption>
-                <thead>
+                <div class="info">
+                <thead >
                     <tr class="table-dark">
                         <th scope="col">Cédula</th>
                         <th scope="col">Nombre</th>
@@ -21,6 +23,7 @@
                         </td>
                     </tr>
                 </tbody>
+            </div>
             </table>
             <div v-else>
                 <h1>Buscando docentes...</h1>
@@ -57,25 +60,46 @@ export default {
 
 <style scoped>
 .contenedor {
-    display: flex;
+    display: grid;
     align-items: center;
     justify-content: center;
     background-color: #6999db;
 }
 
 .tabla {
-    margin-inline: 2%;
-    width: 100%;
+  margin-inline: 2%;
+  width: 100%;
 }
 
 caption {
-    font-weight: bold;
-    font-size: 30px;
-    text-align: center;
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
 }
 
-td, th {
-    text-align: center;
-    vertical-align: middle;
+td,
+th {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.info {
+  max-height: 70vh;
+  overflow-y: auto; /*scroll*/
+}
+
+/*View this observality for changed in others pags web.*/
+.info th,
+.info td {
+  padding: 26px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
 </style>

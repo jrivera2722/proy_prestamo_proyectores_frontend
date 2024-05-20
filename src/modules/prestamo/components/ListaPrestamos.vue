@@ -372,4 +372,10 @@ button {
     overflow-x: auto;
   }
 }
+
+@media screen and (max-width:700px) { /*responsive*/
+  .tabla{
+    overflow-x: auto;
+  }
+}
 </style>

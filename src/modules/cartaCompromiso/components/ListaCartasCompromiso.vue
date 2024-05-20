@@ -406,4 +406,9 @@ thead {
     background-color: #caf0f8;
     border: 2px inset #457b9d;
 }
+@media screen and (max-width:700px) { /*responsive*/
+  .tabla{
+    overflow-x: auto;
+  }
+}
 </style>
