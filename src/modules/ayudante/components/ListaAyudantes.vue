@@ -68,7 +68,7 @@
           <tr class="table-dark">
             <th scope="col">Cédula</th>
             <th scope="col">Nombre</th>
-            <th scope="col">Teléfono</th>
+            <!-- <th scope="col">Teléfono</th> -->
             <th scope="col">Acción</th>
           </tr>
         </thead>
@@ -76,7 +76,7 @@
           <tr v-for="ayudante in ayudantes" :key="ayudante.id">
             <td>{{ ayudante.cedula }}</td>
             <td>{{ ayudante.nombre }}</td>
-            <td>{{ ayudante.telefono }}</td>
+            <!-- <td>{{ ayudante.telefono }}</td> -->
             <td>
               <button
                 class="btn btn-dark"

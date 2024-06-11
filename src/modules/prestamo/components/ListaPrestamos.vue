@@ -20,11 +20,27 @@
             <input
               type="date"
               class="form-control"
-              id="floatingInput2"
-              v-model="filtroText"
+              id="fechaDesde"
+              v-model="fechaDesde"
             />
-            <label for="floatingInput2"><strong>Fecha</strong></label>
+            <label for="fechaDesde"><strong>Desde</strong></label>
           </div>
+          <div class="form-floating">
+            <input
+              type="date"
+              class="form-control"
+              id="fechaHasta"
+              v-model="fechaHasta"
+            />
+            <label for="fechaHasta"><strong>Hasta</strong></label>
+          </div>
+          <button
+            v-if="filtro == 'Fecha'"
+            @click="helperPrestamosFiltro"
+            class="btn btn-primary"
+          >
+            Filtrar
+          </button>
         </div>
 
         <div v-if="filtro == 'Devolución'">
@@ -61,7 +77,22 @@
       </div>
     </div>
 
-    <div class="tabla" style="margin-top: 70px">
+    <div class="center-content">
+      <button class="descarga" @click="mostrar">
+        <img
+          src="@/assets/download.png"
+          style="width: 20px; height: 20px"
+          alt="Descargar"
+        />
+      </button>
+
+      <div v-if="mostrarOpciones" class="opciones">
+        <button class="btn btn-success" @click="descargarExcel2">Excel</button>
+        <button class="btn btn-danger" @click="descargarPDF">PDF</button>
+      </div>
+    </div>
+
+    <div class="tabla" style="margin-top: 10px">
       <table class="table table-hover caption-top" v-if="prestamos.length > 0">
         <caption>
           Lista de Préstamos
@@ -72,9 +103,19 @@
               <th v-if="admin" scope="col">ID</th>
               <th scope="col">Fecha del Préstamo</th>
               <th scope="col">Devuelto</th>
-              <th v-if="admin" scope="col">Fecha de Devolución</th>
+              <th scope="col">Fecha de Devolución</th>
               <th scope="col">Número de carta de compromiso</th>
-              <th scope="col">Docente</th>
+              <!-- <th scope="col">Docente</th> -->
+              
+              <th v-if="admin" scope="col">Asignatura</th>
+              <th v-if="admin" scope="col">Semestre</th>
+              <th v-if="admin" scope="col">Paralelo</th>
+              <th v-if="admin" scope="col">Día</th>
+              <th v-if="admin" scope="col">Hora préstamo</th>
+              <th v-if="admin" scope="col">Hora devolución</th>
+              <th v-if="admin" scope="col">Docente</th>
+              <th v-if="admin" scope="col">Ayudantes</th>
+
               <th scope="col">Prestador</th>
               <th scope="col">Receptor</th>
               <th scope="col">Bienes Prestados</th>
@@ -83,7 +124,7 @@
           </thead>
           <tbody class="table-group-divider">
             <tr
-              v-for="prestamo in prestamos"
+              v-for="prestamo in listado.slice().reverse()"
               :key="prestamo.id"
               :class="claseFila(prestamo.devuelto)"
             >
@@ -91,11 +132,36 @@
               <td>{{ formatDate(prestamo.fechaPrestamo) }}</td>
               <td v-if="prestamo.devuelto">Sí</td>
               <td v-else>No</td>
+
               <td v-if="admin">{{ formatDate(prestamo.fechaDevolucion) }}</td>
               <td v-if="prestamo.idCartaCompromiso">
                 {{ prestamo.idCartaCompromiso }}
               </td>
               <td v-else>Docente</td>
+
+              <td v-if="admin && prestamo.carta">
+                {{ prestamo.carta.asignatura }}
+              </td>
+              <td v-if="admin && prestamo.carta">
+                {{ prestamo.carta.semestre }}
+              </td>
+              <td v-if="admin && prestamo.carta">
+                {{ prestamo.carta.paralelo }}
+              </td>
+              <td v-if="admin && prestamo.carta">{{ prestamo.carta.dia }}</td>
+              <td v-if="admin && prestamo.carta">
+                {{ prestamo.carta.horaPrestamo }}
+              </td>
+              <td v-if="admin && prestamo.carta">
+                {{ prestamo.carta.horaDevolucion }}
+              </td>
+              <td v-if="admin && prestamo.carta">
+                {{ nombreDocentes[prestamo.carta.cedulaDocente] }}
+              </td>
+              <td v-if="admin && prestamo.carta">
+                {{ nombreAyudantes[prestamo.carta.cedulaAyudante] }}
+              </td>
+
               <td v-if="prestamo.cedulaDocente">
                 {{ nombreDocentes[prestamo.cedulaDocente] }}
               </td>
@@ -132,8 +198,18 @@
 </template>
 
 <script>
+import * as xlsx from "xlsx";
+
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
 import router from "@/router/router";
-import { buscarPorCedulaDocenteFachada } from "@/modules/docente/helpers/DocenteCliente";
+import {
+  buscarPorCedulaDocenteFachada,
+  buscarTodosDocentesFachada,
+} from "@/modules/docente/helpers/DocenteCliente";
+import { buscarTodosCartasCompromisoFachada } from "@/modules/cartaCompromiso/helpers/CartaCompromisoCliente";
+import { buscarTodosAyudantesFachada } from "@/modules/ayudante/helpers/AyudanteCliente";
 import {
   buscarPrestamosFachada,
   buscarPorFechaPrestamoFachada,
@@ -143,13 +219,16 @@ import { buscarPorCedulaPrestadorFachada } from "@/modules/prestador/helpers/Pre
 import {
   actualizarPrestamoFachada,
   buscarPorIdPrestamoFachada,
+  searchFechaDesdeHastaFachada,
 } from "../helpers/PrestamoCliente";
 
 export default {
   data() {
     return {
+      listado: [],
       prestamos: [],
       nombreDocentes: [],
+      nombreAyudantes: [],
       nombrePrestadores: [],
       admin: true,
       filtro: "Fecha",
@@ -157,6 +236,8 @@ export default {
       opciones: ["Fecha", "Devolución"],
       mostrarOpciones: false,
       opcionesDevolucion: ["Si", "No"],
+      fechaDesde: "",
+      fechaHasta: "",
     };
   },
   methods: {
@@ -175,14 +256,62 @@ export default {
         }
       }
     },
+
+    async buscarCartas() {
+      let data = [];
+      data = await buscarTodosCartasCompromisoFachada();
+      if (data.length != 0) {
+        this.cartas = data;
+        for (let i = 0; i < this.cartas.length; i++) {
+          this.buscarDocente(this.cartas[i].cedulaDocente);
+          this.buscarAyudante(this.cartas[i].cedulaAyudante);
+        }
+      }
+    },
+    async unirDatosPorId() {
+      try {
+        // Obtener datos de préstamos y cartas
+        const prestamos = await buscarPrestamosFachada();
+        const cartas = await buscarTodosCartasCompromisoFachada();
+        console.log(cartas.id);
+        console.log(prestamos.idCartaCompromiso);
+
+        const datosUnidos = [];
+        prestamos.forEach((prestamo) => {
+          const cartaCorrespondiente = cartas.find(
+            (carta) => carta.id === prestamo.idCartaCompromiso
+          );
+          if (cartaCorrespondiente) {
+            datosUnidos.push({
+              ...prestamo,
+              carta: cartaCorrespondiente,
+            });
+          } else {
+            datosUnidos.push({
+              ...prestamo,
+              carta: null,
+            });
+          }
+        });
+
+        // Aquí tienes los datos unidos por id_cartas
+        console.log("datos unidos");
+        console.log(datosUnidos);
+        console.log(datosUnidos[0].carta.asignatura);
+        this.listado = datosUnidos;
+      } catch (error) {
+        console.error("Error al buscar y unir los datos:", error);
+      }
+    },
     async buscarPrestamos() {
       this.filtro = "Fecha";
       this.filtroText = "";
+      this.fechaDesda = "";
+      this.fechaHasta = "";
       let data = [];
       data = await buscarPrestamosFachada();
       if (data.length != 0) {
         this.prestamos = data;
-
         for (let i = 0; i < this.prestamos.length; i++) {
           this.buscarPrestador(this.prestamos[i].cedulaPrestador);
           if (this.prestamos[i].cedulaDocente)
@@ -192,14 +321,28 @@ export default {
         }
       }
     },
+    async helperPrestamosFiltro() {
+      if (!this.fechaDesde || !this.fechaHasta) {
+        alert("Por favor, seleccione las fechas de desde y hasta.");
+      } else {
+        await this.buscarPrestamosFiltro();
+      }
+    },
     async buscarPrestamosFiltro() {
       let data = [];
-      if (this.filtro == "Fecha") {
+
+      if (this.fechaDesde && this.fechaHasta) {
+        data = await searchFechaDesdeHastaFachada(
+          this.fechaDesde + "T00:00",
+          this.fechaHasta + "T00:00"
+        );
+      } else if (this.filtro == "Fecha") {
         data = await buscarPorFechaPrestamoFachada(this.filtroText + "T00:00");
       } else if (this.filtro == "Devolución") {
         let dev = this.filtroText == "Si" ? true : false;
         data = await buscarPrestamosDevueltosFachada(dev);
       }
+
       if (data.length != 0) this.prestamos = data;
       else {
         alert("El filtro aplicado no posee préstamos.");
@@ -207,11 +350,33 @@ export default {
     },
     async buscarDocente(cedula) {
       const data = await buscarPorCedulaDocenteFachada(cedula);
-      this.nombreDocentes[data.cedula] = data.nombre;
+      //this.nombreDocentes[data.cedula] = data.nombre;
     },
     async buscarPrestador(cedula) {
       const data = await buscarPorCedulaPrestadorFachada(cedula);
       this.nombrePrestadores[data.cedula] = data.nombre;
+    },
+    async buscarTodosDocente() {
+      const data = await buscarTodosDocentesFachada();
+      //console.log(data);
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          var it = data[key];
+          this.nombreDocentes[it.cedula] = it.nombre;
+        }
+      }
+      console.log(this.nombreDocentes);
+    },
+    async buscarTodosAyudantes() {
+      const data = await buscarTodosAyudantesFachada();
+      //console.log(data);
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+          var it = data[key];
+          this.nombreAyudantes[it.cedula] = it.nombre;
+        }
+      }
+      //console.log(this.nombreAyudantes);
     },
     formatDate(fecha) {
       if (!fecha) {
@@ -273,10 +438,156 @@ export default {
                         }
                     }*/
     },
+    descargarPDF() {
+      const doc = new jsPDF({
+        orientation: "landscape",
+      });
+
+      const columns = [
+        "ID",
+        "Fecha del Préstamo",
+        "Devuelto",
+        "Fecha de Devolución",
+        "Número de carta de compromiso",
+        "Docente",
+        "Prestador",
+        "Receptor",
+        "Bienes Prestados",
+        "Acción",
+      ];
+
+      const data = this.prestamos.map((prestamo) => [
+        prestamo.id,
+        this.formatDate(prestamo.fechaPrestamo),
+        prestamo.devuelto ? "Sí" : "No",
+        prestamo.fechaDevolucion
+          ? this.formatDate(prestamo.fechaDevolucion)
+          : "",
+        prestamo.idCartaCompromiso ? prestamo.idCartaCompromiso : "",
+        prestamo.cedulaDocente
+          ? this.nombreDocentes[prestamo.cedulaDocente]
+          : "No",
+        this.nombrePrestadores[prestamo.cedulaPrestador],
+        prestamo.cedulaReceptor
+          ? this.nombrePrestadores[prestamo.cedulaReceptor]
+          : "",
+        prestamo.codigoBienes.join(", "),
+        "",
+      ]);
+
+      // Añadir la tabla
+      doc.autoTable({
+        head: [columns],
+        body: data,
+        startY: 10,
+        theme: "striped",
+      });
+
+      // Verificar espacio restante en la página actual
+      const spaceLeft =
+        doc.internal.pageSize.height - doc.autoTable.previous.finalY;
+
+      // Configurar el formato y la orientación del PDF
+      const textoReglamento1 = "Esperando texto... ";
+      const textoReglamento2 = "\nEsperando texto...";
+
+      const maxWidth = doc.internal.pageSize.width + 70;
+
+      // Dividir el texto en líneas
+      const textLines = doc.splitTextToSize(
+        textoReglamento1 + textoReglamento2,
+        maxWidth
+      );
+
+      let x = 14;
+      let y = doc.autoTable.previous.finalY + 10;
+
+      // Si el espacio restante no es suficiente para el texto adicional y las firmas, agregar una nueva página
+      if (spaceLeft < textLines.length * 7 + 60) {
+        doc.addPage();
+        y = 30;
+      }
+
+      // Agregar cada línea de texto al PDF
+      doc.setFontSize(11);
+      textLines.forEach((line) => {
+        doc.text(line, x, y);
+        y += 7;
+      });
+
+      // Agregar las firmas en la nueva página
+      const firma = "__________________________";
+      const rec = "Ing. Jorge Rivera - Recibe";
+      const ent = "Ing. - Entrega";
+
+      doc.text(firma, 42, 90);
+      doc.text(firma, 194, 90);
+
+      doc.text(rec, 45, 100);
+      doc.text(ent, 200, 100);
+
+      // Descargar el PDF
+      doc.save("Cartas.pdf");
+
+      this.ocultar();
+    },
+    descargarExcel2() {
+      const data = this.prestamos.map((prestamo) => ({
+        ID: this.admin ? prestamo.id : "",
+        "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
+        Devuelto: prestamo.devuelto ? "Sí" : "No",
+        "Fecha de Devolución": this.admin
+          ? prestamo.fechaDevolucion
+            ? this.formatDate(prestamo.fechaDevolucion)
+            : ""
+          : "",
+        "Número de carta de compromiso": prestamo.idCartaCompromiso
+          ? prestamo.idCartaCompromiso
+          : "Docente",
+        Docente: prestamo.cedulaDocente
+          ? this.nombreDocentes[prestamo.cedulaDocente]
+          : "No",
+        Prestador: this.nombrePrestadores[prestamo.cedulaPrestador],
+        Receptor: prestamo.cedulaReceptor
+          ? this.nombrePrestadores[prestamo.cedulaReceptor]
+          : "",
+        "Bienes Prestados": prestamo.codigoBienes.join(", "),
+      }));
+
+      const ws = xlsx.utils.json_to_sheet(data);
+      ws["!cols"] = [
+        { wch: 10 }, // ID
+        { wch: 18 }, // Fecha del Préstamo
+        { wch: 10 }, // Devuelto
+        { wch: 18 }, // Fecha de Devolución
+        { wch: 25 }, // Número de carta de compromiso
+        { wch: 25 }, // Docente
+        { wch: 25 }, // Prestador
+        { wch: 25 }, // Receptor
+        { wch: 30 }, // Bienes Prestados
+        { wch: 15 }, // Acción
+      ];
+
+      const wb = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(wb, ws, "Prestamos");
+
+      xlsx.writeFile(wb, "prestamos.xlsx");
+
+      this.ocultar();
+    },
+    mostrar() {
+      this.mostrarOpciones = true;
+    },
+    ocultar() {
+      this.mostrarOpciones = false;
+    },
   },
   mounted() {
     this.consultarAdmin();
     this.buscarPrestamos();
+    this.unirDatosPorId();
+    this.buscarTodosDocente();
+    this.buscarTodosAyudantes();
   },
   watch: {
     filtro() {
@@ -301,8 +612,29 @@ export default {
   display: grid;
   align-items: center;
   justify-content: center;
-  height: calc(100vh - 70px);
+  height: calc(120vh - 70px);
   background-color: #6999db;
+}
+
+.descarga {
+  margin-left: 20px;
+  border-radius: 20px;
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border: 2px outset #457b9d;
+  cursor: pointer;
+}
+
+.descarga:hover {
+  background-color: #caf0f8;
+  border: 2px inset #457b9d;
+}
+
+.center-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tabla {
@@ -317,10 +649,10 @@ export default {
   padding: 25px 50px;
   background-color: #b4b8ab;
   position: absolute;
-  top: 100px;
+  top: 20px;
 }
 .info {
-  max-height: 70vh;
+  max-height: 50vh;
   overflow-y: auto;
   align-items: center;
 }
@@ -373,8 +705,9 @@ button {
   }
 }
 
-@media screen and (max-width:700px) { /*responsive*/
-  .tabla{
+@media screen and (max-width: 700px) {
+  /*responsive*/
+  .tabla {
     overflow-x: auto;
   }
 }

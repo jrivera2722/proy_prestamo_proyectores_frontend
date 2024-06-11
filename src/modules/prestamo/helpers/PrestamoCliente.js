@@ -24,6 +24,15 @@ export const actualizarPrestamoFachada = async (bodyPrestamo, id) => {
     return await actualizarPrestamo(bodyPrestamo, id)
 }
 
+export const searchFechaDesdeHastaFachada = async(fechaDesde, fechaHasta) => {
+    return await searchFechaDesdeHasta(fechaDesde,fechaHasta);
+}
+
+const searchFechaDesdeHasta = async(fechaDesde, fechaHasta) => {
+    const getData = axios.get(`http://10.3.2.44:8082/API/v1.0/Prestamos/prestamos/fh?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`).then(r => r.data);
+    return getData;
+}
+
 const guardarPrestamo = async (bodyPrestamo) => {
     const data = axios.post(`http://10.3.2.44:8082/API/v1.0/Prestamos/prestamos`, bodyPrestamo).then(r => r.data);
     return data;

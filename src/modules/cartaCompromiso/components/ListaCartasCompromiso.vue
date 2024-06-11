@@ -3,6 +3,55 @@
         <div class="tabla">
             <table class="table table-hover caption-top" v-if="cartas.length > 0">
                 <caption>Lista de Cartas de Compromiso</caption>
+                <!-- <div>
+                    <div class="filtros">
+                        <caption>
+                        Filtros
+                        </caption>
+
+                        <div class="form-floating">
+                        <select class="form-select" id="floatingSelect" v-model="filtro">
+                            <option v-for="opcion in opciones" :key="opcion" :value="opcion">
+                            {{ opcion }}
+                            </option>
+                        </select>
+                        <label for="floatingSelect"><strong>Filtrar por:</strong></label>
+                        </div>
+
+                        <div v-if="filtro == 'Autorizacion'">
+                        <div class="form-floating">
+                            <select
+                            class="form-select"
+                            id="floatingSelect"
+                            v-model="filtroText"
+                            >
+                            <option
+                                v-for="opcion in opcionesAutorizacion"
+                                :key="opcion"
+                                :value="opcion"
+                            >
+                                {{ opcion }}
+                            </option>
+                            </select>
+                            <label for="floatingSelect"><strong>Opcion:</strong></label>
+                        </div>
+                        </div>
+
+                        <div v-if="filtroText != ''">
+                        <button
+                            @click="filtrarPorAutorizacion"
+                            class="btn btn-primary"
+                            style="margin-right: 5px"
+                        >
+                            Filtrar
+                        </button>
+                        <button @click="buscarCartas" class="btn btn-danger">
+                            Eliminar filtro
+                        </button>
+                        </div>
+                    </div>
+                </div> -->
+
                 <div class="center-content">
 
                     <button class="descarga" v-if="cartas.length >= 1 && !filtrar" @click="mostrar">
@@ -33,7 +82,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        <tr v-for="carta in cartas" :key="carta.id" :class="claseFila(carta.autorizacion, carta.id)">
+                        <tr v-for="carta in cartas.slice().reverse()" :key="carta.id" :class="claseFila(carta.autorizacion, carta.id)">
                             <td v-if="!filtrar">{{ carta.id }}</td>
                             <td>{{ carta.asignatura }}</td>
                             <td>{{ carta.semestre }}</td>
@@ -87,6 +136,10 @@ export default {
             cartaSeleccionada: null,
             editar: true,
             mostrarOpciones: false,
+            filtro: 'Autorizacion',
+            filtroText: '',
+            opciones: ["Autorizacion"],
+            opcionesAutorizacion: ["No"]
         };
     },
     methods: {
@@ -148,6 +201,18 @@ export default {
                 };
             }
         },
+        async buscarPrestamosFiltro() {
+            let data = [];
+            data = await buscarPorFechaPrestamoFachada(this.filtroText + "T00:00");
+            if (this.filtro == "Autorizacion") {
+                let dev = this.filtroText == "Si" ? true : false;
+                data = await buscarPrestamosDevueltosFachada(dev);
+            }
+            if (data.length != 0) this.cartas = data;
+            else {
+                alert("El filtro aplicado no posee préstamos.");
+            }
+        },
         async actualizarAutorizacion(id) {
             console.log("funcion" + id);
             const log = sessionStorage.getItem("user");
@@ -160,6 +225,21 @@ export default {
                 }
             } catch (error) {
                 alert("No se puede devolver el prestamo ", id);
+            }
+        },
+        filtrarPorAutorizacion() {
+            if (this.filtro === "Autorizacion") {
+                if (this.filtroText === "No") {
+                    let data = this.cartas.filter(carta => carta.autorizacion !== true);
+
+                    if (data.length !== 0) {
+                        this.cartas = data;
+                    } else {
+                        alert("No hay cartas con autorización 'No'.");
+                    }
+                } else {
+                    this.buscarCartas();
+                }
             }
         },
         mostrar() {
@@ -207,9 +287,9 @@ export default {
 
             // Configurar el formato y la orientación del PDF
             const textoReglamento1 =
-                "De conformidad con lo que determinan los artículos 8 y 41 del Reglamento General para la Administración, Utilización, Manejo y Control de los Bienes y Existencias del Sector Público, entregan para su uso y custodia los bienes que se describen y se detallan en este documento.";
+                "Esperando texto... ";
             const textoReglamento2 =
-                "\nDeclaro que he recibido los bienes institucionales que se me ha asignado, por lo que me comprometo a su custodia, conservación y devolución de los bienes detallados.";
+                "\nEsperando texto...";
 
             const maxWidth = doc.internal.pageSize.width + 70;
 
@@ -227,8 +307,8 @@ export default {
             });
 
             const firma = "__________________________"
-            const rec = "Custodio - Recibe";
-            const ent = "Custodio - Entrega";
+            const rec = "Ing. Jorge Rivera - Recibe";
+            const ent = "Ing. - Entrega";
 
             doc.text(firma, 42, y + 15);
             doc.text(firma, 194, y + 15);
@@ -274,9 +354,9 @@ export default {
             ws["!ref"] = `A1:M${row + 10}`;
 
             const textoReglamento1 =
-                "De conformidad con lo que determinan los artículos 8 y 41 del Reglamento General para la Administración, Utilización, Manejo y Control de los Bienes y Existencias del Sector Público, entregan para su uso y custodia los bienes que se describen y se detallan en este documento.";
+                "Waiting text....";
             const textoReglamento2 =
-                "Declaro que he recibido los bienes institucionales que se me ha asignado, por lo que me comprometo a su custodia, conservación y devolución de los bienes detallados.";
+                "Waiting text....";
 
             xlsx.utils.sheet_add_aoa(ws, [[textoReglamento1]], {
                 origin: `A${row + 2}`,
@@ -286,10 +366,10 @@ export default {
             });
 
             //ws[`B${row + 6}`].s = { border: { bottom: { style: 'thin', color: { auto: 1 } } } };
-            xlsx.utils.sheet_add_aoa(ws, [["Custodio - Recibe"]], {
+            xlsx.utils.sheet_add_aoa(ws, [["Ing. Jorge Rivera - Recibe"]], {
                 origin: `C${row + 7}`,
             });
-            xlsx.utils.sheet_add_aoa(ws, [["Custodio - Entrega"]], {
+            xlsx.utils.sheet_add_aoa(ws, [["Ing. - Entrega"]], {
                 origin: `K${row + 7}`,
             });
 
@@ -356,7 +436,6 @@ caption {
 .info {
     max-height: 60vh;
     overflow-y: auto;
-
     align-items: center;
 }
 
@@ -394,6 +473,25 @@ thead {
   top: 0;
   z-index: 1;
 }
+
+.filtros {
+  margin-inline: 20%;
+  margin-bottom: 2%;
+  width: 60%;
+  border: 1px solid;
+  padding: 25px 50px;
+  position: absolute;
+}
+
+.filtros {
+  width: 50%;
+  border: 1px solid;
+  padding: 50px;
+  margin-left: 25%;
+  background-color: #a8bfdc;
+  position: relative;
+}
+
 .descarga {
     margin-left: 20px;
     border-radius: 20px;

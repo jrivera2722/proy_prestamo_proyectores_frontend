@@ -125,7 +125,8 @@ export default {
             numDias2: 1,
             dias2: [],
             telefonoAyudante2: "",
-            imprimirNuevamente: false
+            imprimirNuevamente: false,
+            numberPDF: 1
         }
     },
     methods: {
@@ -223,7 +224,7 @@ export default {
         generarPDF() {
             
             const doc = new jsPDF();
-
+            
             const x = 28;
             const anchoMaximo = 150;
 
@@ -293,7 +294,7 @@ export default {
 
             doc.text(`C.I.: ${this.cedulaDocente2}`, x, 247)
             doc.text(`C.I.: ${this.cedulaAyudante2}`, x + 87, 247)
-            doc.text(`Telf.: ${this.telefonoAyudante2}`, x + 87, 254)
+            //doc.text(`Telf.: ${this.telefonoAyudante2}`, x + 87, 254)
 
             doc.setFontSize(7);
             doc.setFont('helvetica', 'bold');
@@ -302,8 +303,13 @@ export default {
 
             doc.text(`CIENCIAS APLICADAS Y CARRERA DE INGENIERÍA CIVIL`, x, 270)
             doc.text(`CIENCIAS APLICADAS Y CARRERA DE INGENIERÍA CIVIL`, x + 87, 270)
+            
 
-            window.open(doc.output('bloburl'), '_blank');
+            // window.open(doc.output('bloburl'), '_blank');
+            const pdfPath = "carta_compromiso.pdf";
+            doc.save(pdfPath);
+            return pdfPath;
+
         },
         obtenerFechaHoy() {
             const fechaHoy = new Date();

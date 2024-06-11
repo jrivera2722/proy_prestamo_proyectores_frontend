@@ -1,6 +1,5 @@
 <template>
-    <div class="contenedor">
-        <div></div>
+        <div class="contenedor">
         <div class="tabla">
             <table class="table table-hover caption-top" v-if="docentes.length != 0">
                 <caption>Lista de Docentes</caption>
@@ -59,11 +58,13 @@ export default {
 </script>
 
 <style scoped>
+
 .contenedor {
     display: grid;
     align-items: center;
     justify-content: center;
     background-color: #6999db;
+    height: calc(100vh - 70px);
 }
 
 .tabla {
