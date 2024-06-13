@@ -72,9 +72,9 @@
             <tr class="table-dark">
               <th v-if="admin" scope="col">ID</th>
               <th scope="col">Fecha del Préstamo</th>
-              <th scope="col">Devuelto</th>
+              <th v-if="!admin" scope="col">Devuelto</th>
               <th scope="col">Fecha de Devolución</th>
-              <th scope="col">Número de carta de compromiso</th>
+              <th v-if="!admin" scope="col">Número de carta de compromiso</th>
               <!-- <th scope="col">Docente</th> -->
 
               <th v-if="admin" scope="col">Asignatura</th>
@@ -86,8 +86,11 @@
               <th v-if="admin" scope="col">Docente</th>
               <th v-if="admin" scope="col">Ayudantes</th>
 
-              <th scope="col">Prestador</th>
-              <th scope="col">Receptor</th>
+              <template v-if="!admin">
+                <th scope="col">Prestador</th>
+                <th scope="col">Receptor</th>
+              </template>
+
               <th scope="col">Bienes Prestados</th>
               <th scope="col">Acción</th>
             </tr>
@@ -96,15 +99,21 @@
             <tr v-for="prestamo in listado.slice().reverse()" :key="prestamo.id" :class="claseFila(prestamo.devuelto)">
               <td v-if="admin">{{ prestamo.id }}</td>
               <td>{{ formatDate(prestamo.fechaPrestamo) }}</td>
-              <td v-if="prestamo.devuelto">Sí</td>
-              <td v-else>No</td>
+              <template v-if="!admin">
+                <td v-if="prestamo.devuelto">Sí</td>
+                <td v-else>No</td>
+              </template>
 
               <td>{{ formatDate(prestamo.fechaDevolucion) }}</td>
-              <td v-if="prestamo.idCartaCompromiso">
-                {{ prestamo.idCartaCompromiso }}
-              </td>
-              <td v-if="!prestamo.idCartaCompromiso && !admin"></td>
-            
+
+              <template v-if="!admin">
+                <td v-if="prestamo.idCartaCompromiso">
+                  {{ prestamo.idCartaCompromiso }}
+                </td>
+                <td v-else></td>
+
+              </template>
+
 
               <template v-if="admin">
                 <template v-if="prestamo.carta">
@@ -118,7 +127,7 @@
                   <td>{{ nombreAyudantes[prestamo.carta.cedulaAyudante] }}</td>
                 </template>
                 <template v-else>
-                  <td></td>
+                  <td v-if="!admin"></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -132,11 +141,15 @@
 
 
 
-              <td>{{ nombrePrestadores[prestamo.cedulaPrestador] }}</td>
-              <td v-if="prestamo.cedulaReceptor">
-                {{ nombrePrestadores[prestamo.cedulaReceptor] }}
-              </td>
-              <td v-else></td>
+              <template v-if="!admin">
+                <td>{{ nombrePrestadores[prestamo.cedulaPrestador] }}</td>
+                <td v-if="prestamo.cedulaReceptor">
+                  {{ nombrePrestadores[prestamo.cedulaReceptor] }}
+                </td>
+                <td v-else></td>
+              </template>
+
+
               <td>{{ prestamo.codigoBienes.join(", ") }}</td>
               <td class="casilla-btns">
                 <button class="btn btn-dark" @click="redirigirActualizarPrestamo(prestamo.id)">
@@ -406,31 +419,38 @@ export default {
       const columns = [
         "ID",
         "Fecha del Préstamo",
-        "Devuelto",
+        /*"Devuelto",*/
         "Fecha de Devolución",
-        "Número de carta de compromiso",
+        /*"Número de carta de compromiso",*/
         "Docente",
-        "Prestador",
-        "Receptor",
+        "N Docente",
+        "Ayudante",
+        "Semestre",
+        "Paralelo",
+        "Dia",
+        "Hora Prestamo",
+        "Hora devolución",
+        /*"Prestador",*/
+        /*"Receptor",*/
         "Bienes Prestados",
         "Acción",
       ];
 
-      const data = this.prestamos.map((prestamo) => [
+      const data = this.listado.map((prestamo) => [
         prestamo.id,
         this.formatDate(prestamo.fechaPrestamo),
-        prestamo.devuelto ? "Sí" : "No",
+        //prestamo.devuelto ? "Sí" : "No",
         prestamo.fechaDevolucion
           ? this.formatDate(prestamo.fechaDevolucion)
           : "",
-        prestamo.idCartaCompromiso ? prestamo.idCartaCompromiso : "",
+        //prestamo.idCartaCompromiso ? prestamo.idCartaCompromiso : "",
         prestamo.cedulaDocente
           ? this.nombreDocentes[prestamo.cedulaDocente]
           : "No",
-        this.nombrePrestadores[prestamo.cedulaPrestador],
-        prestamo.cedulaReceptor
+        //this.nombrePrestadores[prestamo.cedulaPrestador],
+        /*prestamo.cedulaReceptor
           ? this.nombrePrestadores[prestamo.cedulaReceptor]
-          : "",
+          : "",*/
         prestamo.codigoBienes.join(", "),
         "",
       ]);
@@ -577,7 +597,7 @@ export default {
 }
 
 .descarga {
-  margin-left: 20px;
+  /*margin-left: 20px;*/
   border-radius: 20px;
   width: 50px;
   height: 50px;
