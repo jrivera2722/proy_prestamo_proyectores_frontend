@@ -80,9 +80,6 @@
               <th v-if="admin" scope="col">Asignatura</th>
               <th v-if="admin" scope="col">Semestre</th>
               <th v-if="admin" scope="col">Paralelo</th>
-              <th v-if="admin" scope="col">Día</th>
-              <th v-if="admin" scope="col">Hora préstamo</th>
-              <th v-if="admin" scope="col">Hora devolución</th>
               <th v-if="admin" scope="col">Docente</th>
               <th v-if="admin" scope="col">Ayudantes</th>
 
@@ -120,17 +117,11 @@
                   <td>{{ prestamo.carta.asignatura }}</td>
                   <td>{{ prestamo.carta.semestre }}</td>
                   <td>{{ prestamo.carta.paralelo }}</td>
-                  <td>{{ prestamo.carta.dia }}</td>
-                  <td>{{ prestamo.carta.horaPrestamo }}</td>
-                  <td>{{ prestamo.carta.horaDevolucion }}</td>
                   <td>{{ nombreDocentes[prestamo.carta.cedulaDocente] }}</td>
                   <td>{{ nombreAyudantes[prestamo.carta.cedulaAyudante] }}</td>
                 </template>
                 <template v-else>
                   <td v-if="!admin"></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
                   <td></td>
                   <td></td>
                   <td></td>
@@ -422,38 +413,44 @@ export default {
         /*"Devuelto",*/
         "Fecha de Devolución",
         /*"Número de carta de compromiso",*/
+        "¿Retiró el Docente?",
         "Docente",
-        "N Docente",
         "Ayudante",
+        "Asignatura",
         "Semestre",
         "Paralelo",
-        "Dia",
-        "Hora Prestamo",
-        "Hora devolución",
         /*"Prestador",*/
         /*"Receptor",*/
         "Bienes Prestados",
-        "Acción",
       ];
 
-      const data = this.listado.map((prestamo) => [
-        prestamo.id,
-        this.formatDate(prestamo.fechaPrestamo),
-        //prestamo.devuelto ? "Sí" : "No",
-        prestamo.fechaDevolucion
-          ? this.formatDate(prestamo.fechaDevolucion)
-          : "",
-        //prestamo.idCartaCompromiso ? prestamo.idCartaCompromiso : "",
-        prestamo.cedulaDocente
-          ? this.nombreDocentes[prestamo.cedulaDocente]
-          : "No",
-        //this.nombrePrestadores[prestamo.cedulaPrestador],
-        /*prestamo.cedulaReceptor
-          ? this.nombrePrestadores[prestamo.cedulaReceptor]
-          : "",*/
-        prestamo.codigoBienes.join(", "),
-        "",
-      ]);
+      console.log("PRESTAMO:::");
+      console.log(this.listado[0].carta.cedulaDocente);
+      const data = this.listado.map((prestamo) => {
+        if (prestamo.carta) {
+          return [
+            prestamo.id,
+            this.formatDate(prestamo.fechaPrestamo),
+            prestamo.fechaDevolucion ? this.formatDate(prestamo.fechaDevolucion) : "",
+            prestamo.cedulaDocente ? "Si" : "No",
+            prestamo.carta.cedulaDocente ? this.nombreDocentes[prestamo.carta.cedulaDocente] : "",
+            prestamo.carta.cedulaAyudante ? this.nombreAyudantes[prestamo.carta.cedulaAyudante] : "",
+            prestamo.carta.asignatura,
+            prestamo.carta.semestre,
+            prestamo.carta.paralelo,
+            prestamo.codigoBienes.join(", "),
+          ];
+        } else {
+          return [
+            prestamo.id,
+            this.formatDate(prestamo.fechaPrestamo),
+            prestamo.fechaDevolucion ? this.formatDate(prestamo.fechaDevolucion) : "",
+            prestamo.cedulaDocente ? "Si" : "No",
+            this.nombreDocentes[prestamo.cedulaDocente], "", "", "", "", // Si no existe prestamo.carta
+            prestamo.codigoBienes.join(", "),
+          ];
+        }
+      });
 
       // Añadir la tabla
       doc.autoTable({
@@ -512,27 +509,55 @@ export default {
       this.ocultar();
     },
     descargarExcel2() {
-      const data = this.prestamos.map((prestamo) => ({
-        ID: this.admin ? prestamo.id : "",
-        "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
-        Devuelto: prestamo.devuelto ? "Sí" : "No",
-        "Fecha de Devolución": this.admin
-          ? prestamo.fechaDevolucion
-            ? this.formatDate(prestamo.fechaDevolucion)
-            : ""
-          : "",
-        "Número de carta de compromiso": prestamo.idCartaCompromiso
-          ? prestamo.idCartaCompromiso
-          : "Docente",
-        Docente: prestamo.cedulaDocente
-          ? this.nombreDocentes[prestamo.cedulaDocente]
-          : "No",
-        Prestador: this.nombrePrestadores[prestamo.cedulaPrestador],
-        Receptor: prestamo.cedulaReceptor
-          ? this.nombrePrestadores[prestamo.cedulaReceptor]
-          : "",
-        "Bienes Prestados": prestamo.codigoBienes.join(", "),
-      }));
+      const data = this.listado.map((prestamo) => {
+        if (prestamo.carta) {
+          return ({
+            ID: this.admin ? prestamo.id : "",
+            "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
+            //Devuelto: prestamo.devuelto ? "Sí" : "No",
+            "Fecha de Devolución": this.admin
+              ? prestamo.fechaDevolucion
+                ? this.formatDate(prestamo.fechaDevolucion)
+                : ""
+              : "",
+            /*"Número de carta de compromiso": prestamo.idCartaCompromiso
+              ? prestamo.idCartaCompromiso
+              : "Docente",*/
+            "¿Restiró el Docente?": prestamo.cedulaDocente
+              ? "Si"
+              : "No",
+            /*Prestador: this.nombrePrestadores[prestamo.cedulaPrestador],
+            Receptor: prestamo.cedulaReceptor
+              ? this.nombrePrestadores[prestamo.cedulaReceptor]
+              : "",*/
+            Docente: prestamo.carta.cedulaDocente ? this.nombreDocentes[prestamo.carta.cedulaDocente] : "",
+            Ayudante: prestamo.carta.cedulaAyudante ? this.nombreAyudantes[prestamo.carta.cedulaAyudante] : "",
+            Asignatura: prestamo.carta.asignatura,
+            Semestre: prestamo.carta.semestre,
+            Paralelo: prestamo.carta.paralelo,
+            "Bienes Prestados": prestamo.codigoBienes.join(", "),
+          });
+        } else {
+          return ({
+            ID: this.admin ? prestamo.id : "",
+            "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
+
+            "Fecha de Devolución": this.admin
+              ? prestamo.fechaDevolucion
+                ? this.formatDate(prestamo.fechaDevolucion)
+                : ""
+              : "",
+            "¿Restiró el Docente?": prestamo.cedulaDocente
+              ? "Si"
+              : "No",
+            Docente: prestamo.cedulaDocente ? this.nombreDocentes[prestamo.cedulaDocente] : "",
+
+            "Bienes Prestados": prestamo.codigoBienes.join(", "),
+          })
+        }
+
+
+      });
 
       const ws = xlsx.utils.json_to_sheet(data);
       ws["!cols"] = [
@@ -563,9 +588,9 @@ export default {
     },
   },
   mounted() {
+    this.unirDatosPorId();
     this.consultarAdmin();
     this.buscarPrestamos();
-    this.unirDatosPorId();
     this.buscarTodosDocente();
     this.buscarTodosAyudantes();
   },
