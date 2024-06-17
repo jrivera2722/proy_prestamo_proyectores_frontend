@@ -17,22 +17,44 @@
 
         <div v-if="filtro == 'Fecha'">
           <div class="form-floating">
-            <input type="date" class="form-control" id="fechaDesde" v-model="fechaDesde" />
+            <input
+              type="date"
+              class="form-control"
+              id="fechaDesde"
+              v-model="fechaDesde"
+            />
             <label for="fechaDesde"><strong>Desde</strong></label>
           </div>
           <div class="form-floating">
-            <input type="date" class="form-control" id="fechaHasta" v-model="fechaHasta" />
+            <input
+              type="date"
+              class="form-control"
+              id="fechaHasta"
+              v-model="fechaHasta"
+            />
             <label for="fechaHasta"><strong>Hasta</strong></label>
           </div>
-          <button v-if="filtro == 'Fecha'" @click="helperPrestamosFiltro" class="btn btn-primary">
+          <button
+            v-if="filtro == 'Fecha'"
+            @click="helperPrestamosFiltro"
+            class="btn btn-primary"
+          >
             Filtrar
           </button>
         </div>
 
         <div v-if="filtro == 'Devolución'">
           <div class="form-floating">
-            <select class="form-select" id="floatingSelect" v-model="filtroText">
-              <option v-for="opcion in opcionesDevolucion" :key="opcion" :value="opcion">
+            <select
+              class="form-select"
+              id="floatingSelect"
+              v-model="filtroText"
+            >
+              <option
+                v-for="opcion in opcionesDevolucion"
+                :key="opcion"
+                :value="opcion"
+              >
                 {{ opcion }}
               </option>
             </select>
@@ -41,7 +63,11 @@
         </div>
 
         <div v-if="filtroText != ''">
-          <button @click="buscarPrestamosFiltro" class="btn btn-primary" style="margin-right: 5px">
+          <button
+            @click="buscarPrestamosFiltro"
+            class="btn btn-primary"
+            style="margin-right: 5px"
+          >
             Filtrar
           </button>
           <button @click="buscarPrestamos" class="btn btn-danger">
@@ -53,7 +79,11 @@
 
     <div class="center-content">
       <button class="descarga" @click="mostrar">
-        <img src="@/assets/download.png" style="width: 20px; height: 20px" alt="Descargar" />
+        <img
+          src="@/assets/download.png"
+          style="width: 20px; height: 20px"
+          alt="Descargar"
+        />
       </button>
 
       <div v-if="mostrarOpciones" class="opciones">
@@ -93,7 +123,11 @@
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <tr v-for="prestamo in listado.slice().reverse()" :key="prestamo.id" :class="claseFila(prestamo.devuelto)">
+            <tr
+              v-for="prestamo in listado.slice().reverse()"
+              :key="prestamo.id"
+              :class="claseFila(prestamo.devuelto)"
+            >
               <td v-if="admin">{{ prestamo.id }}</td>
               <td>{{ formatDate(prestamo.fechaPrestamo) }}</td>
               <template v-if="!admin">
@@ -108,9 +142,7 @@
                   {{ prestamo.idCartaCompromiso }}
                 </td>
                 <td v-else></td>
-
               </template>
-
 
               <template v-if="admin">
                 <template v-if="prestamo.carta">
@@ -130,8 +162,6 @@
                 </template>
               </template>
 
-
-
               <template v-if="!admin">
                 <td>{{ nombrePrestadores[prestamo.cedulaPrestador] }}</td>
                 <td v-if="prestamo.cedulaReceptor">
@@ -140,13 +170,18 @@
                 <td v-else></td>
               </template>
 
-
               <td>{{ prestamo.codigoBienes.join(", ") }}</td>
               <td class="casilla-btns">
-                <button class="btn btn-dark" @click="redirigirActualizarPrestamo(prestamo.id)">
+                <button
+                  class="btn btn-dark"
+                  @click="redirigirActualizarPrestamo(prestamo.id)"
+                >
                   Editar
                 </button>
-                <button class="btn btn-dark" @click="ActualizarDevolucion(prestamo.id)">
+                <button
+                  class="btn btn-dark"
+                  @click="ActualizarDevolucion(prestamo.id)"
+                >
                   Devuelto
                 </button>
               </td>
@@ -431,10 +466,16 @@ export default {
           return [
             prestamo.id,
             this.formatDate(prestamo.fechaPrestamo),
-            prestamo.fechaDevolucion ? this.formatDate(prestamo.fechaDevolucion) : "",
+            prestamo.fechaDevolucion
+              ? this.formatDate(prestamo.fechaDevolucion)
+              : "",
             prestamo.cedulaDocente ? "Si" : "No",
-            prestamo.carta.cedulaDocente ? this.nombreDocentes[prestamo.carta.cedulaDocente] : "",
-            prestamo.carta.cedulaAyudante ? this.nombreAyudantes[prestamo.carta.cedulaAyudante] : "",
+            prestamo.carta.cedulaDocente
+              ? this.nombreDocentes[prestamo.carta.cedulaDocente]
+              : "",
+            prestamo.carta.cedulaAyudante
+              ? this.nombreAyudantes[prestamo.carta.cedulaAyudante]
+              : "",
             prestamo.carta.asignatura,
             prestamo.carta.semestre,
             prestamo.carta.paralelo,
@@ -444,9 +485,15 @@ export default {
           return [
             prestamo.id,
             this.formatDate(prestamo.fechaPrestamo),
-            prestamo.fechaDevolucion ? this.formatDate(prestamo.fechaDevolucion) : "",
+            prestamo.fechaDevolucion
+              ? this.formatDate(prestamo.fechaDevolucion)
+              : "",
             prestamo.cedulaDocente ? "Si" : "No",
-            this.nombreDocentes[prestamo.cedulaDocente], "", "", "", "", // Si no existe prestamo.carta
+            this.nombreDocentes[prestamo.cedulaDocente],
+            "",
+            "",
+            "",
+            "", // Si no existe prestamo.carta
             prestamo.codigoBienes.join(", "),
           ];
         }
@@ -460,15 +507,19 @@ export default {
         theme: "striped",
       });
 
-      // Verificar espacio restante en la página actual
-      const spaceLeft =
-        doc.internal.pageSize.height - doc.autoTable.previous.finalY;
+      // Obtener la posición final de la tabla
+      const finalYTable = doc.autoTable.previous.finalY;
+
+      // Calcular la posición y justo después de la tabla con 2 saltos de línea
+      let y = finalYTable + 2 * 12; // 12 es el espacio entre líneas que has definido
 
       // Configurar el formato y la orientación del PDF
-      const textoReglamento1 = "Esperando texto... ";
-      const textoReglamento2 = "\nEsperando texto...";
+      const textoReglamento1 =
+        "El presente informe detalla el registro de préstamos y devoluciones de proyectores realizados durante el periodo correspondiente." +
+        " Cada movimiento ha sido debidamente documentado, avalando la responsabilidad con la que se han manejado estos bienes institucionales.";
+      const textoReglamento2 = "\n\nAtentamente";
 
-      const maxWidth = doc.internal.pageSize.width + 70;
+      const maxWidth = doc.internal.pageSize.width; // Reducir el ancho disponible para el texto
 
       // Dividir el texto en líneas
       const textLines = doc.splitTextToSize(
@@ -476,32 +527,37 @@ export default {
         maxWidth
       );
 
-      let x = 14;
-      let y = doc.autoTable.previous.finalY + 10;
+      // Verificar espacio restante en la página actual
+      const spaceLeft = doc.internal.pageSize.height - y;
 
       // Si el espacio restante no es suficiente para el texto adicional y las firmas, agregar una nueva página
-      if (spaceLeft < textLines.length * 7 + 60) {
+      if (spaceLeft < textLines.length * 12 + 60) {
         doc.addPage();
-        y = 30;
+        y = 20; // Reiniciar la posición Y en la nueva página
       }
 
-      // Agregar cada línea de texto al PDF
+      // Agregar cada línea de texto al PDF con justificación
       doc.setFontSize(11);
-      textLines.forEach((line) => {
-        doc.text(line, x, y);
-        y += 7;
-      });
+      doc.text(textLines, 25, y, { align: "left", maxWidth });
 
-      // Agregar las firmas en la nueva página
-      const firma = "__________________________";
-      const rec = "Ing. Jorge Rivera - Recibe";
-      const ent = "Ing. - Entrega";
+      // Agregar las firmas en la misma página
+      const firma = "_____________________";
+      const rec1 =
+        "   Ing. Jorge Rivera" +
+        "\nPRESTADORES DEL LABORATORIO DE INGENIERÍA CIVIL";
+      const rec2 = "  Ing. Natali Lascano";
 
-      doc.text(firma, 42, 90);
-      doc.text(firma, 194, 90);
+      const ent =
+        "           Ing. Miguel León MS.c" +
+        "\nDirector de la Carrera de Ingeniería Civil";
 
-      doc.text(rec, 45, 100);
-      doc.text(ent, 200, 100);
+      doc.text(firma, 23, y + 60); // Ajustar la posición Y para las firmas
+      doc.text(firma, 83, y + 60); // Ajustar la posición Y para las firmas
+      doc.text(firma, 194, y + 60); // Ajustar la posición Y para las firmas
+
+      doc.text(rec1, 25, y + 70); // Ajustar la posición Y para el texto de reconocimiento
+      doc.text(rec2, 85, y + 70);
+      doc.text(ent, 185, y + 70); // Ajustar la posición Y para el texto de reconocimiento
 
       // Descargar el PDF
       doc.save("Cartas.pdf");
@@ -511,7 +567,7 @@ export default {
     descargarExcel2() {
       const data = this.listado.map((prestamo) => {
         if (prestamo.carta) {
-          return ({
+          return {
             ID: this.admin ? prestamo.id : "",
             "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
             //Devuelto: prestamo.devuelto ? "Sí" : "No",
@@ -523,22 +579,24 @@ export default {
             /*"Número de carta de compromiso": prestamo.idCartaCompromiso
               ? prestamo.idCartaCompromiso
               : "Docente",*/
-            "¿Restiró el Docente?": prestamo.cedulaDocente
-              ? "Si"
-              : "No",
+            "¿Restiró el Docente?": prestamo.cedulaDocente ? "Si" : "No",
             /*Prestador: this.nombrePrestadores[prestamo.cedulaPrestador],
             Receptor: prestamo.cedulaReceptor
               ? this.nombrePrestadores[prestamo.cedulaReceptor]
               : "",*/
-            Docente: prestamo.carta.cedulaDocente ? this.nombreDocentes[prestamo.carta.cedulaDocente] : "",
-            Ayudante: prestamo.carta.cedulaAyudante ? this.nombreAyudantes[prestamo.carta.cedulaAyudante] : "",
+            Docente: prestamo.carta.cedulaDocente
+              ? this.nombreDocentes[prestamo.carta.cedulaDocente]
+              : "",
+            Ayudante: prestamo.carta.cedulaAyudante
+              ? this.nombreAyudantes[prestamo.carta.cedulaAyudante]
+              : "",
             Asignatura: prestamo.carta.asignatura,
             Semestre: prestamo.carta.semestre,
             Paralelo: prestamo.carta.paralelo,
             "Bienes Prestados": prestamo.codigoBienes.join(", "),
-          });
+          };
         } else {
-          return ({
+          return {
             ID: this.admin ? prestamo.id : "",
             "Fecha del Préstamo": this.formatDate(prestamo.fechaPrestamo),
 
@@ -547,16 +605,14 @@ export default {
                 ? this.formatDate(prestamo.fechaDevolucion)
                 : ""
               : "",
-            "¿Restiró el Docente?": prestamo.cedulaDocente
-              ? "Si"
-              : "No",
-            Docente: prestamo.cedulaDocente ? this.nombreDocentes[prestamo.cedulaDocente] : "",
+            "¿Restiró el Docente?": prestamo.cedulaDocente ? "Si" : "No",
+            Docente: prestamo.cedulaDocente
+              ? this.nombreDocentes[prestamo.cedulaDocente]
+              : "",
 
             "Bienes Prestados": prestamo.codigoBienes.join(", "),
-          })
+          };
         }
-
-
       });
 
       const ws = xlsx.utils.json_to_sheet(data);
@@ -713,7 +769,6 @@ button {
 }
 
 @media screen and (max-width: 700px) {
-
   /*responsive*/
   .tabla {
     overflow-x: auto;
