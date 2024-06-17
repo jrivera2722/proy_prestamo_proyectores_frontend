@@ -127,6 +127,7 @@
               v-for="prestamo in listado.slice().reverse()"
               :key="prestamo.id"
               :class="claseFila(prestamo.devuelto)"
+              
             >
               <td v-if="admin">{{ prestamo.id }}</td>
               <td>{{ formatDate(prestamo.fechaPrestamo) }}</td>
@@ -403,11 +404,16 @@ export default {
       this.admin = data.administrador;
     },
     claseFila(docente) {
+      console.log("!!!!!!!!aki");
+      console.log(docente);
       if (!this.filtrar) {
         return {
           "table-info": docente === true,
           "table-danger": docente === false,
         };
+      }
+      else if(docente){
+        
       }
     },
     async ActualizarDevolucion(id) {

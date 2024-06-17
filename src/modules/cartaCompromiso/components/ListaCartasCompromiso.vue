@@ -82,7 +82,7 @@
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        <tr v-for="carta in cartas.slice().reverse()" :key="carta.id" :class="claseFila(carta.autorizacion, carta.id)">
+                        <tr v-for="carta in cartas.slice().reverse()" :key="carta.id" :class= "claseFila(carta.autorizacion, carta.id)">
                             <td v-if="!filtrar">{{ carta.id }}</td>
                             <td>{{ carta.asignatura }}</td>
                             <td>{{ carta.semestre }}</td>
@@ -130,6 +130,7 @@ import { buscarPorCedulaDocenteFachada } from '@/modules/docente/helpers/Docente
 export default {
     data() {
         return {
+            list: [],
             cartas: [],
             nombreAyudantes: [],
             nombreDocentes: [],
@@ -147,7 +148,7 @@ export default {
             let data = [];
             data = await buscarTodosCartasCompromisoFachada();
             if (data.length != 0) {
-                this.cartas = data;
+                this.cartas = data.sort((a, b) => b.id - a.id).reverse();
                 for (let i = 0; i < this.cartas.length; i++) {
                     this.buscarDocente(this.cartas[i].cedulaDocente);
                     this.buscarAyudante(this.cartas[i].cedulaAyudante);
