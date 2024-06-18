@@ -92,7 +92,7 @@
       </div>
     </div>
 
-    <div class="tabla" style="margin-top: 10px">
+    <div class="tabla">
       <table class="table table-hover caption-top" v-if="prestamos.length > 0">
         <caption>
           Lista de Préstamos
@@ -404,8 +404,8 @@ export default {
       this.admin = data.administrador;
     },
     claseFila(docente) {
-      console.log("!!!!!!!!aki");
-      console.log(docente);
+      //console.log("!!!!!!!!aki");
+      //console.log(docente);
       if (!this.filtrar) {
         return {
           "table-info": docente === true,
@@ -429,7 +429,9 @@ export default {
           id
         );
         if (registro) {
-          this.buscarPrestamos();
+          //this.buscarPrestamos();
+          this.unirDatosPorId();
+          console.log("entro");
         }
       } catch (error) {
         alert("No se puede devolver el prestamo ", id);
@@ -679,7 +681,7 @@ export default {
   display: grid;
   align-items: center;
   justify-content: center;
-  height: calc(120vh - 70px);
+  height: 100%;
   background-color: #6999db;
 }
 
@@ -716,7 +718,7 @@ export default {
   border: 1px solid;
   padding: 25px 50px;
   background-color: #b4b8ab;
-  position: absolute;
+  /*position: absolute;*/
   top: 20px;
 }
 
